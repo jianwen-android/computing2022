@@ -2,14 +2,18 @@ import PySimpleGUI as sg
 
 sg.theme('DarkAmber')  # Add a touch of color
 
-images = ["../assets/signL2.png", "../assets/signA2.png", "../assets/signB2.png", "../assets/signG2.png"]
-count = 0
+images = ["../assets/signA2.png", "../assets/signB2.png", "../assets/signG2.png", "../assets/signI2.png",
+          "../assets/signL2.png"]
 
 
 # All the stuff inside your window.
 
 def updateImg(src=None):
-    window["signImg"].update(source=images[count % 4], size=imgSz)
+    window["signImg"].update(source=src, size=imgSz)
+
+
+def updateText(text="Placeholder text"):
+    window["outputText"].update(text)
 
 
 btnSz = (20, 3)
@@ -31,6 +35,7 @@ layout = [[sg.Column(buttonCol, element_justification='c'), sg.Column(col2, elem
 # Create the Window
 window = sg.Window('Cripple enabler', layout, default_element_size=(45, 1))
 # Event Loop to process "events" and get the "values" of the inputs
+
 while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED:  # if user closes window or clicks cancel
@@ -38,11 +43,12 @@ while True:
     elif event == "_START_":
         print("Start")
         # run start()
-        count += 1
-        updateImg()
+
     elif event == "_STOP_":
         print("Stop")
         # run stop()
+
+
     elif event == "_CALIBRATE_":
         print("Calibrate")
         # run calibrate()
