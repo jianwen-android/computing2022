@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-sg.theme('DarkAmber')  # Add a touch of color
+sg.theme('DarkBrown4')  # Add a touch of color
 
 images = ["../assets/signA2.png", "../assets/signB2.png", "../assets/signG2.png", "../assets/signI2.png",
           "../assets/signL2.png"]
