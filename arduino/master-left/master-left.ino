@@ -3,10 +3,16 @@
 #include <Arduino.h>
 
 int data1[5];
+
+int pinkie;
+int ring;
+int middle;
+int index;
+int thumb;
 // static const uint8_t analog_pins[] = {A0,A1,A2,A3,A4}
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(38400);
 
 }
 
