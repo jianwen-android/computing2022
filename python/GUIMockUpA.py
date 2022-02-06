@@ -1,3 +1,5 @@
+# The main file of the program
+
 import threading  # Used for a separate flow of execution for processing, independent of gui
 import serial  # Used to initialise a connection with arduino, from the glove
 import PySimpleGUI as sg  # A simple gui library used to display information and start the program
