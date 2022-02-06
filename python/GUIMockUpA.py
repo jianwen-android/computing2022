@@ -1,23 +1,42 @@
-import PySimpleGUI as sg
 import threading
 import time
+import serial
+import PySimpleGUI as sg
 
-#Do setup
-images = ["../assets/signA2.png", "../assets/signB2.png", "../assets/signG2.png", "../assets/signI2.png",
-          "../assets/signL2.png"]
+from src import tfFunc, guiFunc, arduinoFunc
+
+# Do setup
+model, px = tfFunc.setupModel()
+# arduino = serial.Serial(port='COM3', baudrate=9600, timeout=.1)
+# tfFunc.modelPredict(model,px)
+
+images = ["../assets/signA2.png", "../assets/signB2.png", "C", "D", "E", "F", "../assets/signG2.png", "H",
+          "../assets/signI2.png",
+          "K", "../assets/signL2.png", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y"]
+'''
+letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q",
+           "R", "S", "T", "U", "W", "X", "Y"]'''
 isReceiving = False
+imgSz = (530, 550)
+btnSz = (20, 3)
+
 
 # All the stuff inside your window.
 
 def retrieveData():
     # retrieveData
-    print('wenis')
+    # i = tfFunc.modelPredict(model, arduinoFunc.readData(arduino))
+    while isReceiving:
+        i = tfFunc.modelPredict(model, px)
+        updateImg(images[i])
+
+    '''print('wenis')
     count = 0
     while isReceiving:
         print('in loop')
         time.sleep(1)
         count += 1
-        updateImg(images[count % 4])
+        updateImg(images[count % 5])'''
 
 
 def updateImg(src=None):
@@ -28,25 +47,8 @@ def updateText(text="Placeholder text"):
     window["outputText"].update(text)
 
 
-sg.theme('DarkBrown4')
-btnSz = (20, 3)
-imgSz = (530, 550)
-imgSrc = "../assets/placeholder2.png"
-
-buttonCol = [[sg.Button(button_text="Start", key="_START_", size=btnSz)],
-             [sg.Button(button_text="Stop", key="_STOP_", size=btnSz)],
-             [sg.Button(button_text="Calibrate", key="_CALIBRATE_", size=btnSz)],
-             ]
-
-col2 = [[sg.Image(source=imgSrc, size=imgSz, key="signImg")]
-        ]
-
-layout = [[sg.Column(buttonCol, element_justification='c'), sg.Column(col2, element_justification="center")],
-          [sg.Text(text="This is the output message", key="outputText", justification="center")]
-          ]
-
 # Create the Window
-window = sg.Window('Cripple enabler', layout, default_element_size=(45, 1))
+window = guiFunc.windowSetup(btnSz, imgSz)
 
 # Event Loop to process "events" and get the "values" of the inputs
 while True:

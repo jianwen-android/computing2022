@@ -24,12 +24,12 @@ def setupModel():
 
     pX = pd.get_dummies(pDf.drop(["Letter"], axis=1))
     # temp data
-    return model,pX
+    return model, pX
 
 
-def modelPredict(model,pX):
+def modelPredict(model, pX):
     # setup complete
     predictions = model.predict(pX)
     classes = np.argmax(predictions, axis=1)
     print(letters[classes[0]])
-    return letters[classes[0]]
+    return classes[0]
