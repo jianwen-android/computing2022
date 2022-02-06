@@ -4,10 +4,10 @@ import numpy as np
 import os
 
 letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q",
-               "R", "S", "T", "U", "W", "X", "Y"]
+           "R", "S", "T", "U", "W", "X", "Y"]
+
 
 def setupModel():
-
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
     model = tf.keras.models.Sequential([
@@ -20,9 +20,9 @@ def setupModel():
 
     model.load_weights("src/weights/weights1")
 
-    pDf = pd.read_csv("src/pData.csv")
+    pdf = pd.read_csv("src/pData.csv")
 
-    pX = pd.get_dummies(pDf.drop(["Letter"], axis=1))
+    pX = pd.get_dummies(pdf.drop(["Letter"], axis=1))
     # temp data
     return model, pX
 
