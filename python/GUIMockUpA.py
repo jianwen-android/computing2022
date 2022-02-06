@@ -1,14 +1,14 @@
-import threading
-import serial
-import PySimpleGUI as sg
-import pandas as pd
+import threading  # Used for a separate flow of execution for processing, independent of gui
+import serial  # Used to initialise a connection with arduino, from the glove
+import PySimpleGUI as sg  # A simple gui library used to display information and start the program
+import pandas as pd  # A data processing library used to format data to be passed into the learnt model
 
-from src import tfFunc, guiFunc, arduinoFunc
+from src import tfFunc, guiFunc, arduinoFunc  # These are all functions separated by library for easier collation
 
 # Do setup
-model, px = tfFunc.setupModel()
+model, px = tfFunc.setupModel()  # Setup model for prediction
 arduino = serial.Serial(port='COM3', baudrate=9600, timeout=.1)
-arduinoFunc.arduinoSetup(arduino)
+arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
 
 images = ["../assets/signA2.png", "../assets/signB2.png", "C", "D", "E", "F", "../assets/signG2.png", "H",
           "../assets/signI2.png",
@@ -66,7 +66,7 @@ while True:
 
     elif event == "_STOP_":  # When the stop button is clicked:
         print("Stop")
-        isReceiving = False # Stops the thread from looping, effectively stopping the thread
+        isReceiving = False  # Stops the thread from looping, effectively stopping the thread
 
     elif event == "_CALIBRATE_":  # When the calibrate button is clicked:
         print("Calibrate")
