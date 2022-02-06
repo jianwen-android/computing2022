@@ -15,9 +15,10 @@ arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
 images = ["../assets/signA2.png", "../assets/signB2.png", "C", "D", "E", "F", "../assets/signG2.png", "H",
           "../assets/signI2.png",
           "K", "../assets/signL2.png", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y"]
-'''
+
 letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q",
-           "R", "S", "T", "U", "W", "X", "Y"]'''
+           "R", "S", "T", "U", "W", "X", "Y"]
+
 isReceiving = False
 imgSz = (530, 550)
 btnSz = (20, 3)
@@ -39,6 +40,7 @@ def startProcess():
             df = pd.DataFrame([x], columns=['Pinky', 'Ring', 'Middle', 'Index', 'Thumb'], dtype=float)
             i = tfFunc.modelPredict(model, df)
             updateImg(images[i])
+            updateText(letters[i])
 
 
 def updateImg(src=None):
