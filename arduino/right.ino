@@ -1,8 +1,8 @@
-#define thumb A0
-#define index A1
+#define thumb A4
+#define index A3
 #define middle A2
-#define ring A3
-#define pinkie A4
+#define ring A1
+#define pinkie A0
 
 void setup() {
   Serial.begin(9600);
