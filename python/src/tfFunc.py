@@ -32,6 +32,6 @@ def setupModel():  # Run once before program starts
 
 def modelPredict(model, pX):  # Predicts / processes data given the data from arduino
     predictions = model.predict(pX)  # Predict the sign given the data
-    classes = np.argmax(predictions, axis=1)  # i think it rounds off the data to the closest int or smt
+    classes = np.argmax(predictions, axis=1)  # Takes the index of the highest value
     # print(letters[classes[0]])  # Was used in debugging
     return classes[0]
