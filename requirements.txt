@@ -1,0 +1,5 @@
+numpy==1.19.5
+pandas==1.4.0
+pyserial==3.5
+PySimpleGUI==4.56.0
+tensorflow==2.8.0
