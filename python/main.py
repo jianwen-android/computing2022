@@ -16,15 +16,17 @@ images = ["../assets/signA2.png", "../assets/signB2.png", "C", "D", "E", "F", ".
 letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q",
            "R", "S", "T", "U", "W", "X", "Y"]
 
-isReceiving = False
-imgSz = (530, 550)
-btnSz = (20, 3)
+
 # Do setup
 config = configparser.ConfigParser()
 config.read('../config.ini')
 
+isReceiving = False
+imgSz = (config['IMAGESIZE']['x'], config['IMAGESIZE']['y'])
+btnSz = (config['BUTTONSIZE']['x'], config['BUTTONSIZE']['y'])
+
 model, px = tfFunc.setupModel()  # Setup model for prediction
-# arduino = serial.Serial(port='COM5', baudrate=9600, timeout=.1)
+arduino = serial.Serial(port=config['SERIAL']['port'], baudrate=int(config['SERIAL']['baudrate']), timeout=float(config['SERIAL']['timeout']))
 # arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
 window = guiFunc.windowSetup(btnSz, imgSz)  # Create the Window
 
