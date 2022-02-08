@@ -4,13 +4,10 @@ import threading  # Used for a separate flow of execution for processing, indepe
 import serial  # Used to initialise a connection with arduino, from the glove
 import PySimpleGUI as sg  # A simple gui library used to display information and start the program
 import pandas as pd  # A data processing library used to format data to be passed into the learnt model
+import configparser
+import time
 
 from src import tfFunc, guiFunc, arduinoFunc  # These are all functions separated by library for easier collation
-
-# Do setup
-model, px = tfFunc.setupModel()  # Setup model for prediction
-arduino = serial.Serial(port='COM3', baudrate=9600, timeout=.1)
-arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
 
 images = ["../assets/signA2.png", "../assets/signB2.png", "C", "D", "E", "F", "../assets/signG2.png", "H",
           "../assets/signI2.png",
@@ -22,6 +19,14 @@ letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O",
 isReceiving = False
 imgSz = (530, 550)
 btnSz = (20, 3)
+# Do setup
+config = configparser.ConfigParser()
+config.read('../config.ini')
+
+model, px = tfFunc.setupModel()  # Setup model for prediction
+# arduino = serial.Serial(port='COM5', baudrate=9600, timeout=.1)
+# arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
+window = guiFunc.windowSetup(btnSz, imgSz)  # Create the Window
 
 
 # Functions
@@ -34,13 +39,19 @@ def startProcess():
     # 3. Updates the image after processing the data
 
     while isReceiving:
-        x = arduinoFunc.readData(arduino)
-        if x:  # if there is data
-            x = x.split(',')
-            df = pd.DataFrame([x], columns=['Pinky', 'Ring', 'Middle', 'Index', 'Thumb'], dtype=float)
+        datas = arduinoFunc.readData(arduino)
+        if datas:  # if there is data
+            datas = datas.split(',')
+            df = pd.DataFrame([datas], columns=['Pinky', 'Ring', 'Middle', 'Index', 'Thumb'], dtype=int)
             i = tfFunc.modelPredict(model, df)
-            updateImg(images[i])
+            # print(i)
+            # print(images[i])
             updateText(letters[i])
+
+
+def linear(x):
+    # (read value - callibrated min) / (callibrated max - callibrated min)
+    pass
 
 
 def updateImg(src=None):
@@ -48,13 +59,50 @@ def updateImg(src=None):
     window["signImg"].update(source=src, size=imgSz)
 
 
+def saveCalibrate(minmax):
+    y = ['PINKIE', 'RING', 'MIDDLE', 'INDEX', 'THUMB']
+    datas = arduinoFunc.readData(arduino)
+    if datas:  # if there is data
+        datas = datas.split(',')
+        for i in range(5):
+            # print(datas[i])
+            config[y[i]][minmax] = datas[i]
+        with open('../config.ini', 'w') as configfile:  # save
+            config.write(configfile)
+
+
+def calibrate():
+    # store calibrated values
+    value1, _ = sg.Window('Calibration', [[sg.T('Extend your fingers and hold them out for 3 seconds')],
+                                          [sg.Ok(s=10), sg.Cancel(s=10)]],
+                          disable_close=True).read(close=True)
+    arduino.flushInput()
+    arduino.flush()
+    time.sleep(1.5)
+    if value1 == 'Ok':
+        saveCalibrate('min')
+    else:
+        print('calibration quit')
+        return
+
+    value2, _ = sg.Window('Continue?', [[sg.T('Close your fingers and hold them closed for 3 seconds')],
+                                        [sg.Ok(s=10), sg.Cancel(s=10)]],
+                          disable_close=True).read(close=True)
+    arduino.flushInput()
+    arduino.flush()
+    time.sleep(1.5)
+    if value2 == 'Ok':
+        saveCalibrate('max')
+    else:
+        print('calibration quit')
+        return
+
+    # sg.popup_ok_cancel("Open your hands", image='../assets/signA2.png')
+
+
 def updateText(text="Placeholder text"):
     # Updates the text of the window to display the appropriate sign
     window["outputText"].update(text)
-
-
-window = guiFunc.windowSetup(btnSz, imgSz)
-# Create the Window
 
 
 # Event Loop to process "events" and get the "values" of the inputs
@@ -74,6 +122,7 @@ while True:
 
     elif event == "_CALIBRATE_":  # When the calibrate button is clicked:
         print("Calibrate")
+        calibrate()
         # run calibrate()
 
 window.close()
