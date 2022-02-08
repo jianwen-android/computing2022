@@ -4,8 +4,8 @@ import threading  # Used for a separate flow of execution for processing, indepe
 import serial  # Used to initialise a connection with arduino, from the glove
 import PySimpleGUI as sg  # A simple gui library used to display information and start the program
 import pandas as pd  # A data processing library used to format data to be passed into the learnt model
-import configparser
-import time
+import configparser  # A default(?) library used to read off ini files
+import time  # A default library for delaying certain portions of the code
 
 from src import tfFunc, guiFunc, arduinoFunc  # These are all functions separated by library for easier collation
 
@@ -16,17 +16,18 @@ images = ["../assets/signA2.png", "../assets/signB2.png", "C", "D", "E", "F", ".
 letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q",
            "R", "S", "T", "U", "W", "X", "Y"]
 
-
 # Do setup
-config = configparser.ConfigParser()
-config.read('../config.ini')
+config = configparser.ConfigParser()  # Setup configparser to read config.ini
+config.read('../config.ini')  # Read config.ini
 
 isReceiving = False
 imgSz = (config['IMAGESIZE']['x'], config['IMAGESIZE']['y'])
 btnSz = (config['BUTTONSIZE']['x'], config['BUTTONSIZE']['y'])
 
 model, px = tfFunc.setupModel()  # Setup model for prediction
-arduino = serial.Serial(port=config['SERIAL']['port'], baudrate=int(config['SERIAL']['baudrate']), timeout=float(config['SERIAL']['timeout']))
+arduino = serial.Serial(port=config['SERIAL']['port'],
+                        baudrate=int(config['SERIAL']['baudrate']),
+                        timeout=float(config['SERIAL']['timeout']))
 # arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
 window = guiFunc.windowSetup(btnSz, imgSz)  # Create the Window
 
@@ -44,10 +45,10 @@ def startProcess():
         datas = arduinoFunc.readData(arduino)
         if datas:  # if there is data
             datas = datas.split(',')
-            df = pd.DataFrame([datas], columns=['Pinky', 'Ring', 'Middle', 'Index', 'Thumb'], dtype=int)
-            i = tfFunc.modelPredict(model, df)
-            # print(i)
-            # print(images[i])
+            df = pd.DataFrame([datas], columns=['Pinky', 'Ring', 'Middle', 'Index', 'Thumb'],
+                              dtype=int)  # Format data into a table for predicting
+            i = tfFunc.modelPredict(model, df)  # Pass read values into model
+            # print(i,images[i])
             updateText(letters[i])
 
 
@@ -63,51 +64,54 @@ def updateImg(src=None):
 
 def saveCalibrate(minmax):
     y = ['PINKIE', 'RING', 'MIDDLE', 'INDEX', 'THUMB']
-    datas = arduinoFunc.readData(arduino)
-    if datas:  # if there is data
+    datas = arduinoFunc.readData(arduino)  # Store read data at one instance
+    if datas:  # If there is data
         datas = datas.split(',')
         for i in range(5):
             # print(datas[i])
-            config[y[i]][minmax] = datas[i]
-        with open('../config.ini', 'w') as configfile:  # save
-            config.write(configfile)
+            config[y[i]][minmax] = datas[i]  # Store data in the correct category for each data
+        with open('../config.ini', 'w') as configfile:  # Save read data into the config.ini
+            config.write(configfile)  # This data will be used in the linear function
 
 
 def calibrate():
-    # store calibrated values
+    # Stores calibrated values
     value1, _ = sg.Window('Calibration', [[sg.Image(source='../assets/handClosed2.png', size=imgSz)],
                                           [sg.T('Extend your fingers and hold them out for 3 seconds')],
                                           [sg.Ok(s=10), sg.Cancel(s=10)]],
                           disable_close=True).read(close=True)
+    # Create a window containing instructions
     arduino.flushInput()
-    arduino.flush()
-    time.sleep(1.5)
-    if value1 == 'Ok':
-        saveCalibrate('min')
+    arduino.flush()  # Clears serial monitor
+    time.sleep(1.5)  # Delay to minimise chance of no read value
+    if value1 == 'Ok':  # If button clicked on window is Ok
+        saveCalibrate('min')  # Save values that is being read in the point of time
     else:
         print('calibration quit')
         return
 
-    value2, _ = sg.Window('Continue?', [[sg.Image(source='../assets/handClosed2.png', size=imgSz)],
+    value2, _ = sg.Window('Calibration', [[sg.Image(source='../assets/handClosed2.png', size=imgSz)],
                                         [sg.T('Close your fingers and hold them closed for 3 seconds')],
                                         [sg.Ok(s=10), sg.Cancel(s=10)]],
                           disable_close=True).read(close=True)
+    # Create a window containing instructions
     arduino.flushInput()
-    arduino.flush()
-    time.sleep(1.5)
-    if value2 == 'Ok':
-        saveCalibrate('max')
+    arduino.flush()  # Clears serial monitor
+    time.sleep(1.5)  # Delay to minimise chance of no read value
+    if value2 == 'Ok':  # If button clicked on window is Ok
+        saveCalibrate('max')  # Save values that is being read in the point of time
     else:
         print('calibration quit')
         return
-
-    # sg.popup_ok_cancel("Open your hands", image='../assets/signA2.png')
 
 
 def updateText(text="Placeholder text"):
     # Updates the text of the window to display the appropriate sign
     window["outputText"].update(text)
 
+
+# Program loop
+# ---
 
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
@@ -126,7 +130,10 @@ while True:
 
     elif event == "_CALIBRATE_":  # When the calibrate button is clicked:
         print("Calibrate")
-        calibrate()
+        if not isReceiving:
+            calibrate()
+        else:
+            sg.popup('Please stop the program before calibration')
         # run calibrate()
 
 window.close()
