@@ -73,7 +73,8 @@ def saveCalibrate(minmax):
 
 def calibrate():
     # store calibrated values
-    value1, _ = sg.Window('Calibration', [[sg.T('Extend your fingers and hold them out for 3 seconds')],
+    value1, _ = sg.Window('Calibration', [[sg.Image(source='../assets/handClosed2.png', size=imgSz)],
+                                          [sg.T('Extend your fingers and hold them out for 3 seconds')],
                                           [sg.Ok(s=10), sg.Cancel(s=10)]],
                           disable_close=True).read(close=True)
     arduino.flushInput()
@@ -85,7 +86,8 @@ def calibrate():
         print('calibration quit')
         return
 
-    value2, _ = sg.Window('Continue?', [[sg.T('Close your fingers and hold them closed for 3 seconds')],
+    value2, _ = sg.Window('Continue?', [[sg.Image(source='../assets/handClosed2.png', size=imgSz)],
+                                        [sg.T('Close your fingers and hold them closed for 3 seconds')],
                                         [sg.Ok(s=10), sg.Cancel(s=10)]],
                           disable_close=True).read(close=True)
     arduino.flushInput()
