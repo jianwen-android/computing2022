@@ -70,9 +70,9 @@ config = configparser.ConfigParser()  # Setup configparser to read config.ini
 config.read("../config.ini")  # Read config.ini
 
 isReceiving = False
-imgSz = (float(config["IMAGESIZE"]["x"]), float(config["IMAGESIZE"]["y"]))
-btnSz = (float(config["BUTTONSIZE"]["x"]), float(config["BUTTONSIZE"]["y"]))
-padding = (float(config["PADDING"]["x"]), float(config["PADDING"]["y"]))
+imgSz = (int(config["IMAGESIZE"]["x"]), int(config["IMAGESIZE"]["y"]))
+btnSz = (int(config["BUTTONSIZE"]["x"]), int(config["BUTTONSIZE"]["y"]))
+padding = (int(config["PADDING"]["x"]), int(config["PADDING"]["y"]))
 
 model, px = tfFunc.setupModel()  # Setup model for prediction
 arduino = serial.Serial(port=config["SERIAL"]["port"],baudrate=int(config["SERIAL"]["baudrate"]),timeout=float(config["SERIAL"]["timeout"]),)
@@ -94,8 +94,9 @@ def startProcess() -> None:
         datas = arduinoFunc.readData(arduino)
         if datas:  # if there is data
             datas = datas.split(",")
+            pdatas = linear(datas)
             df = pd.DataFrame(
-                [datas],
+                [pdatas],
                 columns=["Pinky", "Ring", "Middle", "Index", "Thumb"],
                 dtype=int,
             )  # Format data into a table for predicting
