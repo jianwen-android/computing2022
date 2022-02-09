@@ -70,17 +70,14 @@ config = configparser.ConfigParser()  # Setup configparser to read config.ini
 config.read("../config.ini")  # Read config.ini
 
 isReceiving = False
-imgSz = (config["IMAGESIZE"]["x"], config["IMAGESIZE"]["y"])
-btnSz = (config["BUTTONSIZE"]["x"], config["BUTTONSIZE"]["y"])
+imgSz = (float(config["IMAGESIZE"]["x"]), float(config["IMAGESIZE"]["y"]))
+btnSz = (float(config["BUTTONSIZE"]["x"]), float(config["BUTTONSIZE"]["y"]))
+padding = (float(config["PADDING"]["x"]), float(config["PADDING"]["y"]))
 
 model, px = tfFunc.setupModel()  # Setup model for prediction
-arduino = serial.Serial(
-    port=config["SERIAL"]["port"],
-    baudrate=int(config["SERIAL"]["baudrate"]),
-    timeout=float(config["SERIAL"]["timeout"]),
-)
-# arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
-window = guiFunc.windowSetup(btnSz, imgSz)  # Create the Window
+arduino = serial.Serial(port=config["SERIAL"]["port"],baudrate=int(config["SERIAL"]["baudrate"]),timeout=float(config["SERIAL"]["timeout"]),)
+arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
+window = guiFunc.windowSetup(btnSz, imgSz, padding)  # Create the Window
 
 
 # Functions
