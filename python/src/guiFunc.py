@@ -34,4 +34,4 @@ def windowSetup(btnSz, imgSz, padding):  # Run once before program starts
     ]
     # Creates the final layout, combining both columns side by side and a textbox at the bottom
 
-    return sg.Window("Cripple enabler", layout, default_element_size=(45, 1))
+    return sg.Window("Cripple enabler", layout, default_element_size=(45, 1), resizable=True)
