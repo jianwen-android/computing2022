@@ -87,7 +87,7 @@ window = guiFunc.windowSetup(btnSz, imgSz)  # Create the Window
 # ---
 
 
-def startProcess():
+def startProcess() -> None:
     # The bulk of the program:
     # 1. Reads data from arduino
     # 2. Processes the data into a readable format to be passed into a trained model
@@ -107,33 +107,32 @@ def startProcess():
             updateText(letters[i])
 
 
-def linear(x):
-    # (read value - callibrated min) / (callibrated max - callibrated min)
-    pass
+def linear(datas) -> list:
+    # dis ting the normalisation i tink
+    y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
+    processedDatas = []
+    for i in range(0, 5):
+        processedData = (datas[i] - config[y[i]]['min']) / (config[y[i]]['max'] - config[y[i]]['min'])
+        processedDatas.append(processedData)
+        # (read value - calibrated min) / (calibrated max - callibrated min)
+    return processedDatas
 
 
-def updateImg(src=None):
-    # Updates the image of the window to display the appropriate sign
-    window["signImg"].update(source=src, size=imgSz)
-
-
-def saveCalibrate(minmax):
+def saveCalibrate(minmax) -> None:
     y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
     datas = arduinoFunc.readData(arduino)  # Store read data at one instance
     if datas:  # If there is data
         datas = datas.split(",")
         for i in range(5):
             # print(datas[i])
-            config[y[i]][minmax] = datas[
-                i
-            ]  # Store data in the correct category for each data
+            config[y[i]][minmax] = datas[i]  # Store data in the correct category for each data
         with open(
-            "../config.ini", "w"
+                "../config.ini", "w"
         ) as configfile:  # Save read data into the config.ini
             config.write(configfile)  # This data will be used in the linear function
 
 
-def calibrate():
+def calibrate() -> None:
     # Stores calibrated values
     value1, _ = sg.Window(
         "Calibration",
@@ -170,12 +169,16 @@ def calibrate():
         saveCalibrate("max")  # Save values that is being read in the point of time
     else:
         print("calibration quit")
-        return
 
 
-def updateText(text="Placeholder text"):
+def updateText(text="Placeholder text") -> None:
     # Updates the text of the window to display the appropriate sign
     window["outputText"].update(text)
+
+
+def updateImg(src=None) -> None:
+    # Updates the image of the window to display the appropriate sign
+    window["signImg"].update(source=src, size=imgSz)
 
 
 # Program loop
