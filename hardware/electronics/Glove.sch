@@ -1,0 +1,185 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Module:Arduino_Nano_v3.x A1
+U 1 1 62008C98
+P 5300 2800
+F 0 "A1" H 5300 1711 50  0000 C CNN
+F 1 "Arduino_Nano_v3.x" H 5300 1620 50  0000 C CNN
+F 2 "Module:Arduino_Nano" H 5300 2800 50  0001 C CIN
+F 3 "http://www.mouser.com/pdfdocs/Gravitech_Arduino_Nano3_0.pdf" H 5300 2800 50  0001 C CNN
+	1    5300 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT RV5
+U 1 1 62009A9D
+P 6400 3700
+F 0 "RV5" H 6331 3746 50  0000 R CNN
+F 1 "R_POT" H 6331 3655 50  0000 R CNN
+F 2 "" H 6400 3700 50  0001 C CNN
+F 3 "~" H 6400 3700 50  0001 C CNN
+	1    6400 3700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_POT RV4
+U 1 1 62009E14
+P 6400 3200
+F 0 "RV4" H 6331 3246 50  0000 R CNN
+F 1 "R_POT" H 6331 3155 50  0000 R CNN
+F 2 "" H 6400 3200 50  0001 C CNN
+F 3 "~" H 6400 3200 50  0001 C CNN
+	1    6400 3200
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_POT RV3
+U 1 1 6200A501
+P 6400 2700
+F 0 "RV3" H 6331 2746 50  0000 R CNN
+F 1 "R_POT" H 6331 2655 50  0000 R CNN
+F 2 "" H 6400 2700 50  0001 C CNN
+F 3 "~" H 6400 2700 50  0001 C CNN
+	1    6400 2700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_POT RV2
+U 1 1 6200AC04
+P 6400 2200
+F 0 "RV2" H 6331 2246 50  0000 R CNN
+F 1 "R_POT" H 6331 2155 50  0000 R CNN
+F 2 "" H 6400 2200 50  0001 C CNN
+F 3 "~" H 6400 2200 50  0001 C CNN
+	1    6400 2200
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_POT RV1
+U 1 1 6200B302
+P 6400 1750
+F 0 "RV1" H 6331 1796 50  0000 R CNN
+F 1 "R_POT" H 6331 1705 50  0000 R CNN
+F 2 "" H 6400 1750 50  0001 C CNN
+F 3 "~" H 6400 1750 50  0001 C CNN
+	1    6400 1750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6250 1750 6150 1750
+Wire Wire Line
+	6150 1750 6150 2800
+Wire Wire Line
+	6150 2800 5800 2800
+Wire Wire Line
+	6250 2200 6200 2200
+Wire Wire Line
+	6200 2200 6200 2900
+Wire Wire Line
+	6200 2900 5800 2900
+Wire Wire Line
+	6250 2700 6250 3000
+Wire Wire Line
+	6250 3000 5800 3000
+Wire Wire Line
+	6250 3200 6250 3100
+Wire Wire Line
+	6250 3100 5800 3100
+Wire Wire Line
+	6250 3700 6200 3700
+Wire Wire Line
+	6200 3700 6200 3200
+Wire Wire Line
+	6200 3200 5800 3200
+Wire Wire Line
+	6950 1900 6950 2350
+Wire Wire Line
+	5400 3900 5400 3800
+Wire Wire Line
+	6400 3850 6400 3900
+Wire Wire Line
+	6400 3900 5400 3900
+Connection ~ 6950 3350
+Wire Wire Line
+	6950 3350 6950 3900
+Connection ~ 6950 2850
+Wire Wire Line
+	6950 2850 6950 3350
+Connection ~ 6950 2350
+Wire Wire Line
+	6950 2350 6950 2850
+Wire Wire Line
+	6400 1600 5500 1600
+Wire Wire Line
+	5500 1600 5500 1800
+Wire Wire Line
+	6400 2850 6950 2850
+Wire Wire Line
+	6400 2350 6950 2350
+Wire Wire Line
+	6400 3350 6950 3350
+Wire Wire Line
+	6400 3900 6950 3900
+Connection ~ 6400 3900
+Wire Wire Line
+	6400 1900 6950 1900
+Wire Wire Line
+	6400 2050 6900 2050
+Wire Wire Line
+	6900 2050 6900 1600
+Wire Wire Line
+	6900 1600 6400 1600
+Connection ~ 6400 1600
+Wire Wire Line
+	6400 2550 6900 2550
+Wire Wire Line
+	6900 2550 6900 2050
+Connection ~ 6900 2050
+Wire Wire Line
+	6400 3050 6900 3050
+Wire Wire Line
+	6900 3050 6900 2550
+Connection ~ 6900 2550
+Wire Wire Line
+	6400 3550 6900 3550
+Wire Wire Line
+	6900 3550 6900 3050
+Connection ~ 6900 3050
+NoConn ~ 5400 1800
+NoConn ~ 5200 1800
+NoConn ~ 4800 2200
+NoConn ~ 4800 2300
+NoConn ~ 4800 2400
+NoConn ~ 4800 2500
+NoConn ~ 4800 2600
+NoConn ~ 4800 2700
+NoConn ~ 4800 2800
+NoConn ~ 4800 2900
+NoConn ~ 4800 3000
+NoConn ~ 4800 3100
+NoConn ~ 4800 3200
+NoConn ~ 4800 3300
+NoConn ~ 4800 3400
+NoConn ~ 4800 3500
+NoConn ~ 5300 3800
+NoConn ~ 5800 2200
+NoConn ~ 5800 2300
+NoConn ~ 5800 2600
+NoConn ~ 5800 3300
+NoConn ~ 5800 3400
+NoConn ~ 5800 3500
+$EndSCHEMATC

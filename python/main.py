@@ -7,33 +7,85 @@ import pandas as pd  # A data processing library used to format data to be passe
 import configparser  # A default(?) library used to read off ini files
 import time  # A default library for delaying certain portions of the code
 
-from src import tfFunc, guiFunc, arduinoFunc  # These are all functions separated by library for easier collation
+from src import (
+    tfFunc,
+    guiFunc,
+    arduinoFunc,
+)  # These are all functions separated by library for easier collation
 
-images = ["../assets/signA2.png", "../assets/signB2.png", "C", "D", "E", "F", "../assets/signG2.png", "H",
-          "../assets/signI2.png",
-          "K", "../assets/signL2.png", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y"]
+images = [
+    "../assets/signA2.png",
+    "../assets/signB2.png",
+    "C",
+    "D",
+    "E",
+    "F",
+    "../assets/signG2.png",
+    "H",
+    "../assets/signI2.png",
+    "K",
+    "../assets/signL2.png",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "W",
+    "X",
+    "Y",
+]
 
-letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q",
-           "R", "S", "T", "U", "W", "X", "Y"]
+letters = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "W",
+    "X",
+    "Y",
+]
 
 # Do setup
 config = configparser.ConfigParser()  # Setup configparser to read config.ini
-config.read('../config.ini')  # Read config.ini
+config.read("../config.ini")  # Read config.ini
 
 isReceiving = False
-imgSz = (config['IMAGESIZE']['x'], config['IMAGESIZE']['y'])
-btnSz = (config['BUTTONSIZE']['x'], config['BUTTONSIZE']['y'])
+imgSz = (config["IMAGESIZE"]["x"], config["IMAGESIZE"]["y"])
+btnSz = (config["BUTTONSIZE"]["x"], config["BUTTONSIZE"]["y"])
 
 model, px = tfFunc.setupModel()  # Setup model for prediction
-arduino = serial.Serial(port=config['SERIAL']['port'],
-                        baudrate=int(config['SERIAL']['baudrate']),
-                        timeout=float(config['SERIAL']['timeout']))
+arduino = serial.Serial(
+    port=config["SERIAL"]["port"],
+    baudrate=int(config["SERIAL"]["baudrate"]),
+    timeout=float(config["SERIAL"]["timeout"]),
+)
 # arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
 window = guiFunc.windowSetup(btnSz, imgSz)  # Create the Window
 
 
 # Functions
 # ---
+
 
 def startProcess():
     # The bulk of the program:
@@ -44,9 +96,12 @@ def startProcess():
     while isReceiving:
         datas = arduinoFunc.readData(arduino)
         if datas:  # if there is data
-            datas = datas.split(',')
-            df = pd.DataFrame([datas], columns=['Pinky', 'Ring', 'Middle', 'Index', 'Thumb'],
-                              dtype=int)  # Format data into a table for predicting
+            datas = datas.split(",")
+            df = pd.DataFrame(
+                [datas],
+                columns=["Pinky", "Ring", "Middle", "Index", "Thumb"],
+                dtype=int,
+            )  # Format data into a table for predicting
             i = tfFunc.modelPredict(model, df)  # Pass read values into model
             # print(i,images[i])
             updateText(letters[i])
@@ -63,45 +118,58 @@ def updateImg(src=None):
 
 
 def saveCalibrate(minmax):
-    y = ['PINKIE', 'RING', 'MIDDLE', 'INDEX', 'THUMB']
+    y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
     datas = arduinoFunc.readData(arduino)  # Store read data at one instance
     if datas:  # If there is data
-        datas = datas.split(',')
+        datas = datas.split(",")
         for i in range(5):
             # print(datas[i])
-            config[y[i]][minmax] = datas[i]  # Store data in the correct category for each data
-        with open('../config.ini', 'w') as configfile:  # Save read data into the config.ini
+            config[y[i]][minmax] = datas[
+                i
+            ]  # Store data in the correct category for each data
+        with open(
+            "../config.ini", "w"
+        ) as configfile:  # Save read data into the config.ini
             config.write(configfile)  # This data will be used in the linear function
 
 
 def calibrate():
     # Stores calibrated values
-    value1, _ = sg.Window('Calibration', [[sg.Image(source='../assets/handClosed2.png', size=imgSz)],
-                                          [sg.T('Extend your fingers and hold them out for 3 seconds')],
-                                          [sg.Ok(s=10), sg.Cancel(s=10)]],
-                          disable_close=True).read(close=True)
+    value1, _ = sg.Window(
+        "Calibration",
+        [
+            [sg.Image(source="../assets/handClosed2.png", size=imgSz)],
+            [sg.T("Extend your fingers and hold them out for 3 seconds")],
+            [sg.Ok(s=10), sg.Cancel(s=10)],
+        ],
+        disable_close=True,
+    ).read(close=True)
     # Create a window containing instructions
-    arduino.flushInput()
-    arduino.flush()  # Clears serial monitor
+    arduino.reset_input_buffer()  # Clear the buffer
     time.sleep(1.5)  # Delay to minimise chance of no read value
-    if value1 == 'Ok':  # If button clicked on window is Ok
-        saveCalibrate('min')  # Save values that is being read in the point of time
+    if value1 == "Ok":  # If button clicked on window is Ok
+        saveCalibrate("min")  # Save values that is being read in the point of time
     else:
-        print('calibration quit')
+        print("calibration quit")
         return
 
-    value2, _ = sg.Window('Calibration', [[sg.Image(source='../assets/handClosed2.png', size=imgSz)],
-                                        [sg.T('Close your fingers and hold them closed for 3 seconds')],
-                                        [sg.Ok(s=10), sg.Cancel(s=10)]],
-                          disable_close=True).read(close=True)
+    value2, _ = sg.Window(
+        "Calibration",
+        [
+            [sg.Image(source="../assets/handClosed2.png", size=imgSz)],
+            [sg.T("Close your fingers into a fist and hold them closed for 3 seconds")],
+            [sg.Ok(s=10), sg.Cancel(s=10)],
+        ],
+        disable_close=True,
+    ).read(close=True)
     # Create a window containing instructions
-    arduino.flushInput()
+    arduino.flushInput()  # arduino.readall() if this doesnt work
     arduino.flush()  # Clears serial monitor
     time.sleep(1.5)  # Delay to minimise chance of no read value
-    if value2 == 'Ok':  # If button clicked on window is Ok
-        saveCalibrate('max')  # Save values that is being read in the point of time
+    if value2 == "Ok":  # If button clicked on window is Ok
+        saveCalibrate("max")  # Save values that is being read in the point of time
     else:
-        print('calibration quit')
+        print("calibration quit")
         return
 
 
@@ -116,7 +184,9 @@ def updateText(text="Placeholder text"):
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
     event, values = window.read()
-    t1 = threading.Thread(target=startProcess, args=())  # Creates a separate thread from the window for processing
+    t1 = threading.Thread(
+        target=startProcess, args=()
+    )  # Creates a separate thread from the window for processing
     if event == sg.WIN_CLOSED:  # if user closes window or clicks cancel
         break
     elif event == "_START_":  # When the start button is clicked:
@@ -126,14 +196,16 @@ while True:
 
     elif event == "_STOP_":  # When the stop button is clicked:
         print("Stop")
-        isReceiving = False  # Stops the thread from looping, effectively stopping the thread
+        isReceiving = (
+            False  # Stops the thread from looping, effectively stopping the thread
+        )
 
     elif event == "_CALIBRATE_":  # When the calibrate button is clicked:
         print("Calibrate")
         if not isReceiving:
             calibrate()
         else:
-            sg.popup('Please stop the program before calibration')
+            sg.popup("Please stop the program before calibration")
         # run calibrate()
 
 window.close()
