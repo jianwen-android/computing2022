@@ -15,6 +15,7 @@ def arduinoSetup(arduino) -> bool:  # Run once before program starts
 def readData(arduino) -> str:  # Returns data read from arduino as a string
     try:
         ser_bytes = arduino.readline()  # Read line printed by arduino
+        arduino.reset_input_buffer()
         decoded_bytes = ser_bytes[: len(ser_bytes) - 2].decode(
             "utf-8"
         )  # Perform a decode using utf-8

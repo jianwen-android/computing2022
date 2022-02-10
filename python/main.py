@@ -91,26 +91,33 @@ def startProcess() -> None:
     while isReceiving:
         datas = arduinoFunc.readData(arduino)
         if datas:  # if there is data
-            datas = datas.split(",")
-            pdatas = linear(datas)
+
+            tdatas = datas.split(",")
+
+            pdatas = linear(tdatas)
+            print(pdatas)
             df = pd.DataFrame(
                 [pdatas],
                 columns=["Pinky", "Ring", "Middle", "Index", "Thumb"],
-                dtype=int,
+                dtype=float,
             )  # Format data into a table for predicting
             i = tfFunc.modelPredict(model, df)  # Pass read values into model
             # print(i,images[i])
             updateText(letters[i])
 
 
-def linear(datas) -> list:
+def linear(ldata) -> list:
     # dis ting the normalisation i tink
     y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
     processedDatas = []
+    #print(int(config["PINKIE"]['min']),int(config["PINKIE"]['max']))
+    #print(ldata)
     for i in range(0, 5):
-        processedData = (datas[i] - config[y[i]]['min']) / (config[y[i]]['max'] - config[y[i]]['min'])
+        #print(int(ldata[i]))
+        processedData = (int(ldata[i]) - int(config[y[i]]['min'])) / (int(config[y[i]]['max']) - int(config[y[i]]['min']))
         processedDatas.append(processedData)
         # (read value - calibrated min) / (calibrated max - callibrated min)
+    #print(processedDatas)
     return processedDatas
 
 
@@ -119,6 +126,7 @@ def saveCalibrate(minmax) -> None:
     datas = arduinoFunc.readData(arduino)  # Store read data at one instance
     if datas:  # If there is data
         datas = datas.split(",")
+        print(datas)
         for i in range(5):
             # print(datas[i])
             config[y[i]][minmax] = datas[i]  # Store data in the correct category for each data
@@ -126,6 +134,8 @@ def saveCalibrate(minmax) -> None:
                 "../config.ini", "w"
         ) as configfile:  # Save read data into the config.ini
             config.write(configfile)  # This data will be used in the linear function
+    else:
+        print('no datas')
 
 
 def calibrate() -> None:
@@ -143,6 +153,7 @@ def calibrate() -> None:
     arduino.reset_input_buffer()  # Clear the buffer
     time.sleep(1.5)  # Delay to minimise chance of no read value
     if value1 == "Ok":  # If button clicked on window is Ok
+        print('in2')
         saveCalibrate("min")  # Save values that is being read in the point of time
     else:
         print("calibration quit")
@@ -162,6 +173,7 @@ def calibrate() -> None:
     arduino.flush()  # Clears serial monitor
     time.sleep(1.5)  # Delay to minimise chance of no read value
     if value2 == "Ok":  # If button clicked on window is Ok
+        print('in')
         saveCalibrate("max")  # Save values that is being read in the point of time
     else:
         print("calibration quit")
