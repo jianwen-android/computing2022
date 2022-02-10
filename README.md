@@ -95,7 +95,7 @@ In order to measure the values of the potentiometers when we bend our fingers, w
 
 ## Arduino code
 
-[Left hand](/arduino/nano/nano.ino)[^right].
+[Code]](/arduino/nano/nano.ino)[^right].
 
 ### Explanation
 
@@ -171,6 +171,10 @@ _This function prepares a window object which will be used to display informatio
 3. Connectivity
    1. Right now the glove is limited to being connected to the computer via USB
    2. This means that you can only wear the glove around the computer, and you would need a cable connected
+4. Consistency
+   1. Not all badge reels are made equal, some are extremely rusty while some are extremely springy
+   2. This means that the consistency and the force needed to bend a finger may vary from finger to finger
+   3. It also meant that finding springs that can meet our threshold of springing back fast enough is difficult
 
 ## Possible improvements
 
