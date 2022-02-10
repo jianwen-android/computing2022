@@ -43,11 +43,14 @@ _Declares variable pinkie and assigns it the the analog pin A4, then prints the 
 
 [requirements](requirements.txt)
 
-### Machine Learning
+### tensorflow
 
 @Zafyree3
 
-### Python GUI
+### configparser
+
+
+### pysimplegui
 
 @Leroy-Hong fat
 ```Python
