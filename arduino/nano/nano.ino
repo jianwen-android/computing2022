@@ -1,3 +1,5 @@
+// By Jian Wen
+
 #define thumb A0
 #define index A1
 #define middle A2
