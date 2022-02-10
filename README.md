@@ -6,6 +6,8 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 
 ### Glove
 
+#### Reels
+
 1. For each hand, print:
 
    1. 5 [End caps](hardware/stl/Prot3_EndCap.STL)[^endcap]
@@ -31,14 +33,23 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
    2. We recommend leaving extra length as the string will be tied to the endcap and you can simply cut off the excess when you are done
    3. Once you are done, push the covers down onto the tensioner and holder. They should click into place
 6. Insert the completed module (Tensioner + Spool holder + Spool cover) onto the holders. They should click into place.
-7. Glue the completed reels to the back of your gloves such that they are side by side and correspond to each of your fingers
+7. Wear the gloves and put on the customized endcaps to each of the fingers
+   1. Straighten your fingers against a flat surface and tie the ends of the string to the endcaps, ensuring that the reels are not pulled
+
+#### Arduino
+
+1. Solder 5V and GND to the first and last pin of the potentiometers from the top (these can be shared between the 5 fingers on each hand)
+2. Solder a wire connecting the middle pin (analogue pin) of the potentiometer to the corresponding pin on the Arduino
+3. Refer to [Wiring](README.md#wiring)
+
+#### Putting it all together
+
+1. Glue the completed reels to the back of your gloves such that they are side by side and correspond to each of your fingers
    1. Glue the guide nodes to the first 2 phalange or section of your finger on the back of your gloves
-   2. Wear the gloves and put on the customized endcaps to each of the fingers
-8. Straighten your fingers against a flat surface and tie the ends of the string to the endcaps, ensuring that the reels are not pulled
-9. Solder 5V and GND to the first and last pin of the potentiometers from the top (these can be shared between the 5 fingers on each hand)
-   1. Solder a wire connecting the middle pin (analogue pin) of the potentiometer to the corresponding pin on the Arduino
-   2. Refer to [Wiring](README.md#wiring)
-10. Put on the gloves and you are done!
+2. Trim the pins of the Arduino to make sure that they don't stand out, using a flush cutter
+3. Depending on the material of your glove, either:
+   1. Hot glue the Arduino Nano onto the glove (ensure that the pins of the Arduino are electrically isolated)
+   2. Tape the Nano onto the glove
 
 ### Code
 
@@ -49,13 +60,18 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
    2. Test the serial port by going under Tools > Port
 4. Under [config.ini](config.ini) change the following:
 
-```conf
-[SERIAL]
-port = 'COM3' #Change this to the correct port
-```
+   ```conf
+   [SERIAL]
+   port = 'COM3' #Change this to the correct port
+   ```
 
-5. Run the code by typing `python3 main.py`
-6. \(python stuff yall need to explain here)
+5. Install the [requirements](requirements.txt) for this project using
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+
+   1. Run the code using `python3 main.py`
 
 ## Hardware
 
@@ -65,7 +81,7 @@ Taken from [lucidVR](https://github.com/LucidVR/lucidgloves/tree/44050f3c9a5da6c
 
 ## Wiring
 
-In order to measure the values of the potentiometers when we bend our fingers, we need to connect the wipers of the potentiometer to the Arduino in this fashion:
+In order to measure the values of the potentiometers when we bend our fingers, we need to connect the wipers (middle pin) of the potentiometer to the Arduino in this fashion:
 
 | Pin | Arduino |
 | :-: | :-----: |
@@ -75,7 +91,7 @@ In order to measure the values of the potentiometers when we bend our fingers, w
 | A3  |  ring   |
 | A4  | pinkie  |
 
-![](hardware/electronics/image.png)
+![Schematic](hardware/electronics/image.png)
 
 ## Arduino code
 
@@ -95,12 +111,6 @@ void loop() {
 _Declares variable pinkie and assigns it the the analog pin A4, then prints the value of the pin every second_
 
 ## Python
-
-Install the [requirements](requirements.txt) for this project using
-
-```shell
-pip install -r requirements.txt
-```
 
 ### tensorflow
 
@@ -153,7 +163,7 @@ _This function prepares a window object which will be used to display informatio
 
 # Limitations
 
-1. We are not able to translate certain letters
+1. Letters
    1. Letters like z and j require you to move your hand, which is not possible to track in the current prototype
    2. Letters like r, v and u only differ in pointing towards different directions, which is not possibel to track in the current prototype
 2. Words
@@ -174,4 +184,4 @@ _This function prepares a window object which will be used to display informatio
 
 [^right]: Not used in the final prototype.
 [^endcap]: Need to be sized to fit each individual finger (Use 3D modelling software like Fusion360)
-[^guide]: Number can be adjusted according to how many you need, however at the minimum you will need 9 and we reccommend 14
+[^nodes]: Number can be adjusted according to how many you need, however at the minimum you will need 9 and we reccommend 14
