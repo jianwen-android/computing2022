@@ -9,9 +9,36 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 1. For each hand, print:
 
    1. 5 [End caps](hardware/stl/Prot3_EndCap.STL)[^endcap]
-   2. 14 [Guide nodes](hardware/stl/Prot3_EndCap.STL)
+   2. 14 [Guide nodes](hardware/stl/Prot3_EndCap.STL)[^nodes]
+   3. 5 [Holders](hardware/stl/Prot3.1_Holder.STL)
+   4. 5 [Tensioners](hardware/stl/Prot3.1_Tensioner.STL)
+   5. 5 [Spool holders](hardware/stl/Prot3.1R2_EasySpool.STL)
+   6. 5 [Spool covers](hardware/stl/Prot3.1_SpoolCover_Taller.STL)
 
-2.
+2. Prepare 5 badge reels by removing their outer plastic casing, and extracting the string + metal spool spring
+   ![Anatomy of a badge reel](/hardware/anatomy-badge-reel.png)
+
+   _Taken from [EID badges](https://www.eidbadges.com/anatomy-reels)_
+
+3. Prepare each reel by inserting a potentiometer knob side up into the bottom of the tensioner and screwing it in place with the provided nut
+   1. Then insert the etched end of the spool spring into the hole on the side of the tensioner, turn and coil the spring into the tensioner
+   2. Slot the spring into the slit of the potentiometer to hold it in place
+4. Tie a knot on one end of the string and slot it through the bottomm hole of the spool holder
+   1. Insert the spool holder onto the knob of the potentiometer
+   2. Ensure that the potentiometer will spring back into place when you turn the spool holder clockwise
+5. Thread the other end of the string into the spool cover
+   1. Turn it clockwise to coil in the extra string until the string is of a suitable length to suit your finger
+   2. We recommend leaving extra length as the string will be tied to the endcap and you can simply cut off the excess when you are done
+   3. Once you are done, push the covers down onto the tensioner and holder. They should click into place
+6. Insert the completed module (Tensioner + Spool holder + Spool cover) onto the holders. They should click into place.
+7. Glue the completed reels to the back of your gloves such that they are side by side and correspond to each of your fingers
+   1. Glue the guide nodes to the first 2 phalange or section of your finger on the back of your gloves
+   2. Wear the gloves and put on the customized endcaps to each of the fingers
+8. Straighten your fingers against a flat surface and tie the ends of the string to the endcaps, ensuring that the reels are not pulled
+9. Solder 5V and GND to the first and last pin of the potentiometers from the top (these can be shared between the 5 fingers on each hand)
+   1. Solder a wire connecting the middle pin (analogue pin) of the potentiometer to the corresponding pin on the Arduino
+   2. Refer to [Wiring](README.md#wiring)
+10. Put on the gloves and you are done!
 
 ### Code
 
@@ -81,7 +108,6 @@ pip install -r requirements.txt
 
 ### configparser
 
-
 ### pysimplegui
 
 ```Python
@@ -122,9 +148,11 @@ def windowSetup(btnSz, imgSz, padding):  # Run once before program starts
 
     return sg.Window("Cripple enabler", layout, default_element_size=(45, 1), resizable=True)
 ```
+
 _This function prepares a window object which will be used to display information and interact with the programme - basically a GUI_
 
 # Limitations
+
 1. We are not able to translate certain letters
    1. Letters like z and j require you to move your hand, which is not possible to track in the current prototype
    2. Letters like r, v and u only differ in pointing towards different directions, which is not possibel to track in the current prototype
@@ -146,3 +174,4 @@ _This function prepares a window object which will be used to display informatio
 
 [^right]: Not used in the final prototype.
 [^endcap]: Need to be sized to fit each individual finger (Use 3D modelling software like Fusion360)
+[^guide]: Number can be adjusted according to how many you need, however at the minimum you will need 9 and we reccommend 14

@@ -15,6 +15,7 @@ letters = [
     "G",
     "H",
     "I",
+    # "J",
     "K",
     "L",
     "M",
@@ -22,24 +23,29 @@ letters = [
     "O",
     "P",
     "Q",
+    # "R",
     "S",
     "T",
     "U",
+    # "V",
     "W",
     "X",
     "Y",
+    # "Z",
 ]
 
 
 def setupModel():  # Run once before program starts
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Gives tf perms i think
 
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Dense(5, activation="relu"),
-        tf.keras.layers.Dense(64, activation="relu"),
-        tf.keras.layers.Dense(32, activation="relu"),
-        tf.keras.layers.Dense(len(letters), activation="softmax")
-    ])
+    model = tf.keras.models.Sequential(
+        [
+            tf.keras.layers.Dense(5, activation="relu"),
+            tf.keras.layers.Dense(64, activation="relu"),
+            tf.keras.layers.Dense(32, activation="relu"),
+            tf.keras.layers.Dense(len(letters), activation="softmax"),
+        ]
+    )
     model.compile(
         optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"]
     )
@@ -54,7 +60,9 @@ def setupModel():  # Run once before program starts
     return model, pX
 
 
-def modelPredict(model, pX) -> int:  # Predicts / processes data given the data from arduino
+def modelPredict(
+    model, pX
+) -> int:  # Predicts / processes data given the data from arduino
     predictions = model.predict(pX)  # Predict the sign given the data
     classes = np.argmax(predictions, axis=1)  # Takes the index of the highest value
     # print(letters[classes[0]])  # Was used in debugging
