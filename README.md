@@ -39,6 +39,9 @@ _(From left to right, top to bottom) Leroy Hong (S401), Jian Wen (S402), Irman Z
       - [Colaboratory of code](#colaboratory-of-code)
     - [configparser](#configparser)
     - [pysimplegui](#pysimplegui)
+    - [threading](#threading)
+    - [serial](#serial)
+    - [others](#others)
 - [Limitations](#limitations)
   - [Possible improvements](#possible-improvements)
 - [Thanks to](#thanks-to)
@@ -370,16 +373,21 @@ def updateImg(src=None) -> None:
     # Updates the image of the window to display the appropriate sign
     window["signImg"].update(source=src, size=imgSz)
 ```
+
 _Updates elements in the window when process is start_
+
 ### threading
+
 ```Python
 import threading  # Used for a separate flow of execution for processing, independent of gui
 ```
+
 ```Python
 t1 = threading.Thread(
         target=startProcess, args=()
     )  # Creates a separate thread from the window for processing
 ```
+
 _Creates a thread that will call the function startProcess(), which does the reading of data from the arduino and predicts the sign_
 
 ```Python
@@ -389,17 +397,22 @@ _Creates a thread that will call the function startProcess(), which does the rea
          isReceiving = True  # Allow the thread to loop
          t1.start()  # Start the thread
 ```
+
 _Starts the thread when the start button is pressed from the GUI_
 
 ### serial
+
 ```python
 import serial  # Used to initialise a connection with arduino, from the glove
 ```
+
 ```python
 arduino = serial.Serial(port=config["SERIAL"]["port"], baudrate=int(config["SERIAL"]["baudrate"]), timeout=float(config["SERIAL"]["timeout"]),)
 arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
 ```
+
 _Assigns serial object to arduino, then clears improper data sent by the arduino and prepares for new data._
+
 ```python
 def arduinoSetup(arduino) -> bool:  # Run once before program starts
     arduino.reset_input_buffer()
@@ -408,11 +421,15 @@ def arduinoSetup(arduino) -> bool:  # Run once before program starts
     #  Gives buffer time to allow the serial port to be ready
     return True
 ```
+
 _This just removes data that was previously in the arduino_
+
 ```python
 datas = arduinoFunc.readData(arduino)
 ```
+
 _Assigns datas to a string output by the arduino through a called function_
+
 ```python
 def readData(arduino) -> str:  # Returns data read from arduino as a string
     try:
@@ -428,6 +445,7 @@ def readData(arduino) -> str:  # Returns data read from arduino as a string
     except:
         return None
 ```
+
 _Decodes bytes retrieved from the arduino, and returns it_
 
 ### others
@@ -472,6 +490,7 @@ def calibrate() -> None:
     else:
         print("calibration quit")
 ```
+
 _Creates popup for calibrating the minimum and maximum values of the pulled strings_
 
 ```python
@@ -492,6 +511,7 @@ def saveCalibrate(minmax) -> None:
         print('no datas')
         sg.popup(f"Error: no datas found for {minmax}, do calibrate again.")
 ```
+
 _Stores datas into the config file, to be used in normalisation of data pre-prediction_
 
 # Limitations
