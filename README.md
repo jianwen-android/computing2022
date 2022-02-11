@@ -5,6 +5,7 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 ![Team Image](/assets/IMG_6436.png)
 
 _Image of the team *Triple Cripple Uncrippler*_
+
 _(From left to right, top to bottom) Leroy Hong (S401), Jian Wen (S402), Irman Zafyree (S401)_
 
 ## Instructions
