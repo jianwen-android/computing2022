@@ -149,7 +149,7 @@ def calibrate() -> None:
     value1, _ = sg.Window(
         "Calibration",
         [
-            [sg.Image(source="../assets/handClosed2.png", size=imgSz)],
+            [sg.Image(source="../assets/placeholder2.png", size=imgSz)],
             [sg.T("Extend your fingers and hold them out for 3 seconds")],
             [sg.Ok(s=10), sg.Cancel(s=10)],
         ],
