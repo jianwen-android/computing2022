@@ -67,6 +67,7 @@ letters = [
 config = configparser.ConfigParser()  # Setup configparser to read config.ini
 config.read("../config.ini")  # Read config.ini
 
+isCalibrating = False
 isReceiving = False
 imgSz = (int(config["IMAGESIZE"]["x"]), int(config["IMAGESIZE"]["y"]))
 btnSz = (int(config["BUTTONSIZE"]["x"]), int(config["BUTTONSIZE"]["y"]))
@@ -74,7 +75,7 @@ padding = (int(config["PADDING"]["x"]), int(config["PADDING"]["y"]))
 
 model, px = tfFunc.setupModel()  # Setup model for prediction
 try:
-    arduino = serial.Serial(port=config["SERIAL"]["port"],baudrate=int(config["SERIAL"]["baudrate"]),timeout=float(config["SERIAL"]["timeout"]),)
+    arduino = serial.Serial(port=config["SERIAL"]["port"], baudrate=int(config["SERIAL"]["baudrate"]), timeout=float(config["SERIAL"]["timeout"]),)
     arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
 except:
     print("Error occurred with the initialisation of the Arduino, please check connections / whether port has been configured properly.")
@@ -145,6 +146,7 @@ def saveCalibrate(minmax) -> None:
             config.write(configfile)  # This data will be used in the linear function
     else:
         print('no datas')
+        sg.popup(f"Error: no datas found for {minmax}, do calibrate again.")
 
 
 def calibrate() -> None:
@@ -213,8 +215,9 @@ while True:
         break
     elif event == "_START_":  # When the start button is clicked:
         print("Start")
-        isReceiving = True  # Allow the thread to loop
-        t1.start()  # Start the thread
+        if not isCalibrating:
+            isReceiving = True  # Allow the thread to loop
+            t1.start()  # Start the thread
 
     elif event == "_STOP_":  # When the stop button is clicked:
         print("Stop")
@@ -225,7 +228,9 @@ while True:
     elif event == "_CALIBRATE_":  # When the calibrate button is clicked:
         print("Calibrate")
         if not isReceiving:
+            isCalibrating = True
             calibrate()
+            isCalibrating = False
         else:
             sg.popup("Please stop the program before calibration")
         # run calibrate()
