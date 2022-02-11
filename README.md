@@ -310,7 +310,30 @@ def windowSetup(btnSz, imgSz, padding):  # Run once before program starts
 ```
 
 _This function prepares a window object which will be used to display information and interact with the programme - basically a GUI_
+### threading
+```Python
+import threading  # Used for a separate flow of execution for processing, independent of gui
+```
+```Python
+t1 = threading.Thread(
+        target=startProcess, args=()
+    )  # Creates a separate thread from the window for processing
+```
+_Creates a thread that will call the function startProcess(), which does the reading of data from the arduino and predicts the sign_
 
+```Python
+ elif event == "_START_":  # When the start button is clicked:
+     print("Start")
+     if not isCalibrating:
+         isReceiving = True  # Allow the thread to loop
+         t1.start()  # Start the thread
+```
+_Starts the thread when the start button is pressed from the GUI_
+
+### serial
+```python
+import serial  # Used to initialise a connection with arduino, from the glove
+```
 # Limitations
 
 1. Letters
