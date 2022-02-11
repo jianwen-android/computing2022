@@ -36,6 +36,14 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 7. Wear the gloves and put on the customized endcaps to each of the fingers
    1. Straighten your fingers against a flat surface and tie the ends of the string to the endcaps, ensuring that the reels are not pulled
 
+#### Flex sensor
+
+Alternatively, you can use bend sensors to measure the bend of a finger, this method will be more accurate, less bulky and easier to wear but will require more time and effort to create the sensors.
+
+Instructions on how to make them:
+[Instructables](https://www.instructables.com/How-to-Make-FLEX-Sensor-at-Home-DIY-Flex-Sensor/)
+[Arduino Forums](https://create.arduino.cc/projecthub/Shahirnasar/simple-homemade-flex-sensor-ff54f0)
+
 #### Arduino
 
 1. Solder 5V and GND to the first and last pin of the potentiometers from the top (these can be shared between the 5 fingers on each hand)
