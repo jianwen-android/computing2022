@@ -2,6 +2,41 @@
 
 A team of Sec 4s from the **School of Science and Technology, Singapore**.
 
+# Table of Contents
+
+- [Triple Cripple Uncripplers](#triple-cripple-uncripplers)
+- [Table of Contents](#table-of-contents)
+  - [Instructions](#instructions)
+    - [Glove](#glove)
+      - [Reels](#reels)
+        - [Flex sensor](#flex-sensor)
+      - [Arduino](#arduino)
+      - [Putting it all together](#putting-it-all-together)
+    - [Setting up the environment](#setting-up-the-environment)
+  - [Hardware](#hardware)
+    - [3D Printed Parts](#3d-printed-parts)
+    - [Wiring](#wiring)
+  - [Arduino](#arduino-1)
+    - [Explanation](#explanation)
+  - [Python](#python)
+    - [Tensorflow (Training the model)](#tensorflow-training-the-model)
+      - [Importing Libraries](#importing-libraries)
+      - [Dealing With Spreadsheet](#dealing-with-spreadsheet)
+      - [Preprocessing Data](#preprocessing-data)
+      - [Getting Model](#getting-model)
+      - [Training Model](#training-model)
+      - [Evaluate the Model](#evaluate-the-model)
+      - [Saving Model](#saving-model)
+    - [Tensorflow (Predicting with the model)](#tensorflow-predicting-with-the-model)
+      - [Load the model with weights](#load-the-model-with-weights)
+      - [Predicting with the model](#predicting-with-the-model)
+      - [Colaboratory of code](#colaboratory-of-code)
+    - [configparser](#configparser)
+    - [pysimplegui](#pysimplegui)
+- [Limitations](#limitations)
+  - [Possible improvements](#possible-improvements)
+- [Thanks to](#thanks-to)
+
 ## Instructions
 
 ### Glove
@@ -36,12 +71,14 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 7. Wear the gloves and put on the customized endcaps to each of the fingers
    1. Straighten your fingers against a flat surface and tie the ends of the string to the endcaps, ensuring that the reels are not pulled
 
-#### Flex sensor
+##### Flex sensor
 
 Alternatively, you can use bend sensors to measure the bend of a finger, this method will be more accurate, less bulky and easier to wear but will require more time and effort to create if you don't choose to buy the sensors.
 
 Instructions on how to make them:
+
 [Instructables](https://www.instructables.com/How-to-Make-FLEX-Sensor-at-Home-DIY-Flex-Sensor/)
+
 [Arduino Forums](https://create.arduino.cc/projecthub/Shahirnasar/simple-homemade-flex-sensor-ff54f0)
 
 #### Arduino
@@ -59,7 +96,7 @@ Instructions on how to make them:
    1. Hot glue the Arduino Nano onto the glove (ensure that the pins of the Arduino are electrically isolated)
    2. Tape the Nano onto the glove
 
-### Code
+### Setting up the environment
 
 1. Connect the Arduino Nano to the computer
 2. Upload Arduino code to the nano to the respective hand using the [Arduino IDE](https://www.arduino.cc/en/software)
@@ -73,7 +110,9 @@ Instructions on how to make them:
    port = 'COM3' #Change this to the correct port
    ```
 
-5. Install the [requirements](requirements.txt) for this project using
+5. Install Python (version 3.10.x will do)
+   1. Ensure that the installation comes with the latest version of tkinter
+6. Install the [requirements](requirements.txt) for this project using
 
    ```shell
    pip install -r requirements.txt
@@ -99,9 +138,9 @@ In order to measure the values of the potentiometers when we bend our fingers, w
 | A3  |  ring   |
 | A4  | pinkie  |
 
-![Schematic](hardware/electronics/image.png)
+![Schematic](hardware/electronics/image.png)[^schematic]
 
-## Arduino code
+## Arduino
 
 [Code](/arduino/nano/nano.ino)[^right].
 
@@ -339,6 +378,17 @@ _This function prepares a window object which will be used to display informatio
 3. Add a battery as a power source and bluetooth module
    1. With Bluetooth modules connected to the Arduino, we would be able to implement wireless features to the glove
 
+# Thanks to
+
+[lucidVR](https://github.com/LucidVR/lucidgloves) for the STL files and how to use badge reels to measure finger movements
+
+The teachers for giving us advice and guidance throughout the duration of the project:
+
+1. Ms Tang
+2. Mr Pang
+3. Mr Samuel Lee
+
 [^right]: Right hand is not used in the prototype.
 [^endcap]: Need to be sized to fit each individual finger (Use 3D modelling software like Fusion360)
 [^nodes]: Number can be adjusted according to how many you need, however at the minimum you will need 9 and we reccommend 14
+[^schematic]: Wire the first and second pin directly to 5V and the analog pins if youre using flex sensors
