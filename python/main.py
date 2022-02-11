@@ -73,7 +73,7 @@ imgSz = (int(config["IMAGESIZE"]["x"]), int(config["IMAGESIZE"]["y"]))
 btnSz = (int(config["BUTTONSIZE"]["x"]), int(config["BUTTONSIZE"]["y"]))
 padding = (int(config["PADDING"]["x"]), int(config["PADDING"]["y"]))
 
-model, px = tfFunc.setupModel()  # Setup model for prediction
+model = tfFunc.setupModel()  # Setup model for prediction
 try:
     arduino = serial.Serial(port=config["SERIAL"]["port"], baudrate=int(config["SERIAL"]["baudrate"]), timeout=float(config["SERIAL"]["timeout"]),)
     arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
@@ -106,7 +106,7 @@ def startProcess() -> None:
                 dtype=float,
             )  # Format data into a table for predicting
             i = tfFunc.modelPredict(model, df)  # Pass read values into model
-            # print(i,images[i])
+            print(i,images[i])
             updateText(letters[i])
             try:
                 updateImg(images[i])
@@ -119,10 +119,10 @@ def linear(ldata) -> list:
     y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
     processedDatas = []
     #print(int(config["PINKIE"]['min']),int(config["PINKIE"]['max']))
-    print(ldata)
+    #print(ldata)
 
     for i in range(0, 5):
-        print(ldata[i])
+        #print(ldata[i])
         processedData = (int(ldata[i]) - int(config[y[i]]['min'])) / (int(config[y[i]]['max']) - int(config[y[i]]['min']))
         processedDatas.append(processedData)
         # (read value - calibrated min) / (calibrated max - callibrated min)
