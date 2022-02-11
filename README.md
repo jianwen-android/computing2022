@@ -95,7 +95,7 @@ In order to measure the values of the potentiometers when we bend our fingers, w
 
 ## Arduino code
 
-[Code]](/arduino/nano/nano.ino)[^right].
+[Code](/arduino/nano/nano.ino)[^right].
 
 ### Explanation
 
