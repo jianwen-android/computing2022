@@ -158,11 +158,95 @@ _These lines are to get the data from the google sheet and saves it as a csv to 
 df = pd.read_csv("data.csv") # Reading the CSV
 X = pd.get_dummies(df.drop(["Letter"],axis=1)) # Remove letter as that outcome
 letters = ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q",
-            "S","T","U","W","X","Y"] # List of the doable alphabets in order
+            "S","T","U","W","X","Y"] # List of the doable alphabets in order, some letters like j and z requires movement, r, 
 Y = df["Letter"].apply(lambda x: letters.index(x)) # Mapping ints to the letters
 ```
 
 _Sets up the data to be used for the training of the model_
+
+#### Getting Model
+
+```Python
+X_train,X_test,Y_train,Y_test = train_test_split(X,Y, test_size=0.3) # Split the data to be used for training and then testing
+model = tf.keras.models.Sequential([ # Create a neural network with a these following layers:
+                                    tf.keras.layers.Dense(5, activation="relu"), # Input layers with 5 nodes
+                                    tf.keras.layers.Dense(64, activation="relu"), # Hidden layers of 64 nodes
+                                    tf.keras.layers.Dense(32, activation="relu"), # Hidden layers of 32 nodes
+                                    tf.keras.layers.Dense(len(letters), activation="softmax") # Output layers with node equal to number of alphabet
+])
+model.compile( # Configures the model for training
+              optimizer='adam', # Optimizer that implements the Adam algorithm
+              loss='sparse_categorical_crossentropy', # Use this crossentropy loss function when there are two or more label classes.
+              metrics=['accuracy'] # Calculates how often predictions equal labels
+)
+```
+
+_Prepare the model that we want to train_
+
+#### Training Model
+
+```Python
+model.fit(X_train, Y_train, epochs=200) # Trains the model 200 times using our training data
+```
+
+_Our model learns from the data and changes the weights according to how the model was prepared earlier_
+
+#### Evaluate the Model
+
+```Python
+model.evaluate(X_test, Y_test) # Tests the model with the test data to see how accurate the prediction is
+```
+
+_We see how well our model is able to predict and change the configuration if the accuracy is too low (i.e < 70%)_
+
+#### Saving Model
+
+```Python
+model.save_weights('./weights/weights1')
+```
+
+_Saves the weights of the model into a folder to be used to predict data later_
+
+### Tensorflow (Predicting with the model)
+
+#### Load the model with weights
+
+```Python
+model = tf.keras.models.Sequential([ # Configures the layers to be the same as how it is trains in order to use the weights
+                                    tf.keras.layers.Dense(5, activation="relu"),
+                                    tf.keras.layers.Dense(64, activation="relu"),
+                                    tf.keras.layers.Dense(32, activation="relu"),
+                                    tf.keras.layers.Dense(len(letters), activation="softmax")
+])
+model.compile( # We also configure the compliations the same
+              optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy']
+)
+model.load_weights('./weights/weights1') # Load the weights into the model
+```
+
+_This is how we set up and load the weights into the model to be_
+
+#### Predicting with the model
+
+```Python
+pDf = pd.read_csv("pData.csv") # Loads the data to be predicted
+pX = pd.get_dummies(pDf.drop(["Letter"],axis=1)) # Removed the letter column as that is what we are predicting
+predictions = model.predict(pX) # Uses the model to predict the letter of the data
+classes = np.argmax(predictions, axis = 1) # We take the highest values from the predictions array
+letters = ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q",
+            "R","S","T","U","W","X","Y"]
+print(letters[classes[0]]) # Use the highest value to determine which latter was predicted
+```
+
+_The is how we use the model to predict letter of data_
+
+#### Colaboratory of code
+
+[Link for the colaboratory code can be found here](https://colab.research.google.com/drive/1Sa6vwZDiKaWeS2yP_VQGnIof6uECQ_Ln?usp=sharing)
+
+---
 
 ### configparser
 
