@@ -1,5 +1,5 @@
 # An extension file handling the setup of a trained model and predicting signs from it
-
+# Made by Irman <3
 import pandas as pd  # Used for data formatting to be passed into model
 import tensorflow as tf  # Used to load the model given trained weights
 import numpy as np  # Used to do math or something

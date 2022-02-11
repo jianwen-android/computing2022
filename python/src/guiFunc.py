@@ -1,5 +1,5 @@
 # An extension file handling the setup of the gui
-
+# Made by Leroy <3
 import PySimpleGUI as sg  # A simple gui library used to display information and start the program
 
 

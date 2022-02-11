@@ -313,6 +313,18 @@ def windowSetup(btnSz, imgSz, padding):  # Run once before program starts
 ```
 
 _This function prepares a window object which will be used to display information and interact with the programme - basically a GUI_
+
+```python
+def updateText(text="Placeholder text") -> None:
+    # Updates the text of the window to display the appropriate sign
+    window["outputText"].update(text)
+
+
+def updateImg(src=None) -> None:
+    # Updates the image of the window to display the appropriate sign
+    window["signImg"].update(source=src, size=imgSz)
+```
+_Updates elements in the window when process is start_
 ### threading
 ```Python
 import threading  # Used for a separate flow of execution for processing, independent of gui
@@ -337,6 +349,105 @@ _Starts the thread when the start button is pressed from the GUI_
 ```python
 import serial  # Used to initialise a connection with arduino, from the glove
 ```
+```python
+arduino = serial.Serial(port=config["SERIAL"]["port"], baudrate=int(config["SERIAL"]["baudrate"]), timeout=float(config["SERIAL"]["timeout"]),)
+arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
+```
+_Assigns serial object to arduino, then clears improper data sent by the arduino and prepares for new data._
+```python
+def arduinoSetup(arduino) -> bool:  # Run once before program starts
+    arduino.reset_input_buffer()
+    arduino.flush()
+    time.sleep(1.5)
+    #  Gives buffer time to allow the serial port to be ready
+    return True
+```
+_This just removes data that was previously in the arduino_
+```python
+datas = arduinoFunc.readData(arduino)
+```
+_Assigns datas to a string output by the arduino through a called function_
+```python
+def readData(arduino) -> str:  # Returns data read from arduino as a string
+    try:
+        ser_bytes = arduino.readline()  # Read line printed by arduino
+        arduino.reset_input_buffer()
+        decoded_bytes = ser_bytes[: len(ser_bytes) - 2].decode(
+            "utf-8"
+        )  # Perform a decode using utf-8
+        if decoded_bytes:  # If there is data read
+            return decoded_bytes
+        else:  # If there is NO data read
+            return None
+    except:
+        return None
+```
+_Decodes bytes retrieved from the arduino, and returns it_
+
+### others
+
+```python
+def calibrate() -> None:
+    # Stores calibrated values
+    value1, _ = sg.Window(
+        "Calibration",
+        [
+            [sg.Image(source="../assets/handClosed2.png", size=imgSz)],
+            [sg.T("Extend your fingers and hold them out for 3 seconds")],
+            [sg.Ok(s=10), sg.Cancel(s=10)],
+        ],
+        disable_close=True,
+    ).read(close=True)
+    # Create a window containing instructions
+    arduino.readall() # Clears serial monitor
+    time.sleep(1.5)  # Delay to minimise chance of no read value
+    if value1 == "Ok":  # If button clicked on window is Ok
+        print('in2')
+        saveCalibrate("min")  # Save values that is being read in the point of time
+    else:
+        print("calibration quit")
+        return
+
+    value2, _ = sg.Window(
+        "Calibration",
+        [
+            [sg.Image(source="../assets/handClosed2.png", size=imgSz)],
+            [sg.T("Close your fingers into a fist and hold them closed for 3 seconds")],
+            [sg.Ok(s=10), sg.Cancel(s=10)],
+        ],
+        disable_close=True,
+    ).read(close=True)
+    # Create a window containing instructions
+    arduino.readall()  # Clears serial monitor
+    time.sleep(1.5)  # Delay to minimise chance of no read value
+    if value2 == "Ok":  # If button clicked on window is Ok
+        print('in')
+        saveCalibrate("max")  # Save values that is being read in the point of time
+    else:
+        print("calibration quit")
+```
+_Creates popup for calibrating the minimum and maximum values of the pulled strings_
+
+```python
+def saveCalibrate(minmax) -> None:
+    y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
+
+    datas = arduinoFunc.readData(arduino)  # Store read data at one instance
+    if datas:  # If there is data
+        datas = datas.split(",")
+        print(datas)
+        for i in range(5):
+            config[y[i]][minmax] = datas[i]  # Store data in the correct category for each data
+        with open(
+                "../config.ini", "w"
+        ) as configfile:  # Save read data into the config.ini
+            config.write(configfile)  # This data will be used in the linear function
+    else:
+        print('no datas')
+        sg.popup(f"Error: no datas found for {minmax}, do calibrate again.")
+```
+_Stores datas into the config file, to be used in normalisation of data pre-prediction_
+
 # Limitations
 
 1. Letters

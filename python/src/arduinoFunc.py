@@ -1,6 +1,6 @@
 # An extension file handling the setup of the arduino and reading data off it
 # pass arduino = serial.Serial(port='COM3', baudrate=9600, timeout=.1) into functions
-
+# Made by Jian Wen <3
 import time
 
 

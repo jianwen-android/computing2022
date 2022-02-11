@@ -1,5 +1,5 @@
 # The main file of the program
-
+# Made by Leroy <3
 import threading  # Used for a separate flow of execution for processing, independent of gui
 import serial  # Used to initialise a connection with arduino, from the glove
 import PySimpleGUI as sg  # A simple gui library used to display information and start the program
@@ -118,15 +118,11 @@ def linear(ldata) -> list:
     # dis ting the normalisation i tink
     y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
     processedDatas = []
-    #print(int(config["PINKIE"]['min']),int(config["PINKIE"]['max']))
-    #print(ldata)
 
     for i in range(0, 5):
-        #print(ldata[i])
         processedData = (int(ldata[i]) - int(config[y[i]]['min'])) / (int(config[y[i]]['max']) - int(config[y[i]]['min']))
         processedDatas.append(processedData)
         # (read value - calibrated min) / (calibrated max - callibrated min)
-    #print(processedDatas)
     return processedDatas
 
 
@@ -138,7 +134,6 @@ def saveCalibrate(minmax) -> None:
         datas = datas.split(",")
         print(datas)
         for i in range(5):
-            # print(datas[i])
             config[y[i]][minmax] = datas[i]  # Store data in the correct category for each data
         with open(
                 "../config.ini", "w"
@@ -161,8 +156,7 @@ def calibrate() -> None:
         disable_close=True,
     ).read(close=True)
     # Create a window containing instructions
-    # arduino.flush()  # Clear the buffer
-    arduino.readall()
+    arduino.readall() # Clears serial monitor
     time.sleep(1.5)  # Delay to minimise chance of no read value
     if value1 == "Ok":  # If button clicked on window is Ok
         print('in2')
@@ -181,8 +175,6 @@ def calibrate() -> None:
         disable_close=True,
     ).read(close=True)
     # Create a window containing instructions
-    # arduino.reset_input_buffer()  # arduino.readall() if this doesnt work
-    # arduino.reset_output_buffer()
     arduino.readall()  # Clears serial monitor
     time.sleep(1.5)  # Delay to minimise chance of no read value
     if value2 == "Ok":  # If button clicked on window is Ok
