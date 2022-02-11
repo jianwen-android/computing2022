@@ -83,11 +83,11 @@ Instructions on how to make them:
 
 ## Hardware
 
-## STL
+### 3D Printed Parts
 
 Taken from [lucidVR](https://github.com/LucidVR/lucidgloves/tree/44050f3c9a5da6cbe2278d66de1696ce95ae12e5) at commit **44050f3**
 
-## Wiring
+### Wiring
 
 In order to measure the values of the potentiometers when we bend our fingers, we need to connect the wipers (middle pin) of the potentiometer to the Arduino in this fashion:
 
