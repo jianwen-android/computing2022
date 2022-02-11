@@ -2,6 +2,12 @@
 
 A team of Sec 4s from the **School of Science and Technology, Singapore**.
 
+![Team Image](/assets/IMG_6436.png)
+
+_Image of the team *Triple Cripple Uncrippler*_
+
+_(From left to right, top to bottom) Leroy Hong (S401), Jian Wen (S402), Irman Zafyree (S401)_
+
 # Table of Contents
 
 - [Triple Cripple Uncripplers](#triple-cripple-uncripplers)
@@ -36,13 +42,6 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 - [Limitations](#limitations)
   - [Possible improvements](#possible-improvements)
 - [Thanks to](#thanks-to)
-
-
-![Team Image](/assets/IMG_6436.png)
-
-_Image of the team *Triple Cripple Uncrippler*_
-
-_(From left to right, top to bottom) Leroy Hong (S401), Jian Wen (S402), Irman Zafyree (S401)_
 
 ## Instructions
 
@@ -533,4 +532,4 @@ The teachers for giving us advice and guidance throughout the duration of the pr
 [^right]: Right hand is not used in the prototype.
 [^endcap]: Need to be sized to fit each individual finger (Use 3D modelling software like Fusion360)
 [^nodes]: Number can be adjusted according to how many you need, however at the minimum you will need 9 and we reccommend 14
-[^schematic]: Wire the first and second pin directly to 5V and the analog pins if youre using flex sensors
+[^schematic]: Wire the first and second pin directly to 5V and the analog pins respectively if youre using flex sensors
