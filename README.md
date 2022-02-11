@@ -103,7 +103,7 @@ In order to measure the values of the potentiometers when we bend our fingers, w
 
 ## Arduino code
 
-[Code]](/arduino/nano/nano.ino)[^right].
+[Code](/arduino/nano/nano.ino)[^right].
 
 ### Explanation
 
@@ -194,6 +194,6 @@ _This function prepares a window object which will be used to display informatio
 3. Add a battery as a power source and bluetooth module
    1. With Bluetooth modules connected to the Arduino, we would be able to implement wireless features to the glove
 
-[^right]: Not used in the final prototype.
+[^right]: Right hand is not used in the prototype.
 [^endcap]: Need to be sized to fit each individual finger (Use 3D modelling software like Fusion360)
 [^nodes]: Number can be adjusted according to how many you need, however at the minimum you will need 9 and we reccommend 14

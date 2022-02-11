@@ -54,10 +54,8 @@ def setupModel():  # Run once before program starts
     model.load_weights("src/weights/weights1")
     # Load the weights derived from training model
 
-    pdf = pd.read_csv("src/pData.csv")
-    pX = pd.get_dummies(pdf.drop(["Letter"], axis=1))
     # Backup test data (not necessary when program is running)
-    return model, pX
+    return model
 
 
 def modelPredict(

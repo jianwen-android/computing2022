@@ -16,26 +16,26 @@ from src import (
 images = [
     "../assets/signA2.png",
     "../assets/signB2.png",
-    "C",
-    "D",
-    "E",
-    "F",
+    "../assets/signC2.png",
+    "../assets/signD2.png",
+    "../assets/signE2.png",
+    "../assets/signF2.png",
     "../assets/signG2.png",
-    "H",
+    "../assets/signH2.png",
     "../assets/signI2.png",
-    "K",
+    "../assets/signK2.png",
     "../assets/signL2.png",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "S",
-    "T",
-    "U",
-    "W",
-    "X",
-    "Y",
+    "../assets/signM2.png",
+    "../assets/signN2.png",
+    "../assets/signO2.png",
+    "../assets/signP2.png",
+    "../assets/signQ2.png",
+    "../assets/signS2.png",
+    "../assets/signT2.png",
+    "../assets/signU2.png",
+    "../assets/signW2.png",
+    "../assets/signX2.png",
+    "../assets/signY2.png",
 ]
 
 letters = [
@@ -67,14 +67,18 @@ letters = [
 config = configparser.ConfigParser()  # Setup configparser to read config.ini
 config.read("../config.ini")  # Read config.ini
 
+isCalibrating = False
 isReceiving = False
 imgSz = (int(config["IMAGESIZE"]["x"]), int(config["IMAGESIZE"]["y"]))
 btnSz = (int(config["BUTTONSIZE"]["x"]), int(config["BUTTONSIZE"]["y"]))
 padding = (int(config["PADDING"]["x"]), int(config["PADDING"]["y"]))
 
-model, px = tfFunc.setupModel()  # Setup model for prediction
-arduino = serial.Serial(port=config["SERIAL"]["port"],baudrate=int(config["SERIAL"]["baudrate"]),timeout=float(config["SERIAL"]["timeout"]),)
-arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
+model = tfFunc.setupModel()  # Setup model for prediction
+try:
+    arduino = serial.Serial(port=config["SERIAL"]["port"], baudrate=int(config["SERIAL"]["baudrate"]), timeout=float(config["SERIAL"]["timeout"]),)
+    arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
+except:
+    print("Error occurred with the initialisation of the Arduino, please check connections / whether port has been configured properly.")
 window = guiFunc.windowSetup(btnSz, imgSz, padding)  # Create the Window
 
 
@@ -91,34 +95,48 @@ def startProcess() -> None:
     while isReceiving:
         datas = arduinoFunc.readData(arduino)
         if datas:  # if there is data
-            datas = datas.split(",")
-            pdatas = linear(datas)
+
+            tdatas = datas.split(",")
+
+            pdatas = linear(tdatas)
+            print(pdatas)
             df = pd.DataFrame(
                 [pdatas],
                 columns=["Pinky", "Ring", "Middle", "Index", "Thumb"],
-                dtype=int,
+                dtype=float,
             )  # Format data into a table for predicting
             i = tfFunc.modelPredict(model, df)  # Pass read values into model
-            # print(i,images[i])
+            print(i,images[i])
             updateText(letters[i])
+            try:
+                updateImg(images[i])
+            except:
+                pass
 
 
-def linear(datas) -> list:
+def linear(ldata) -> list:
     # dis ting the normalisation i tink
     y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
     processedDatas = []
+    #print(int(config["PINKIE"]['min']),int(config["PINKIE"]['max']))
+    #print(ldata)
+
     for i in range(0, 5):
-        processedData = (datas[i] - config[y[i]]['min']) / (config[y[i]]['max'] - config[y[i]]['min'])
+        #print(ldata[i])
+        processedData = (int(ldata[i]) - int(config[y[i]]['min'])) / (int(config[y[i]]['max']) - int(config[y[i]]['min']))
         processedDatas.append(processedData)
         # (read value - calibrated min) / (calibrated max - callibrated min)
+    #print(processedDatas)
     return processedDatas
 
 
 def saveCalibrate(minmax) -> None:
     y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
+
     datas = arduinoFunc.readData(arduino)  # Store read data at one instance
     if datas:  # If there is data
         datas = datas.split(",")
+        print(datas)
         for i in range(5):
             # print(datas[i])
             config[y[i]][minmax] = datas[i]  # Store data in the correct category for each data
@@ -126,6 +144,9 @@ def saveCalibrate(minmax) -> None:
                 "../config.ini", "w"
         ) as configfile:  # Save read data into the config.ini
             config.write(configfile)  # This data will be used in the linear function
+    else:
+        print('no datas')
+        sg.popup(f"Error: no datas found for {minmax}, do calibrate again.")
 
 
 def calibrate() -> None:
@@ -140,9 +161,11 @@ def calibrate() -> None:
         disable_close=True,
     ).read(close=True)
     # Create a window containing instructions
-    arduino.reset_input_buffer()  # Clear the buffer
+    # arduino.flush()  # Clear the buffer
+    arduino.readall()
     time.sleep(1.5)  # Delay to minimise chance of no read value
     if value1 == "Ok":  # If button clicked on window is Ok
+        print('in2')
         saveCalibrate("min")  # Save values that is being read in the point of time
     else:
         print("calibration quit")
@@ -158,10 +181,12 @@ def calibrate() -> None:
         disable_close=True,
     ).read(close=True)
     # Create a window containing instructions
-    arduino.flushInput()  # arduino.readall() if this doesnt work
-    arduino.flush()  # Clears serial monitor
+    # arduino.reset_input_buffer()  # arduino.readall() if this doesnt work
+    # arduino.reset_output_buffer()
+    arduino.readall()  # Clears serial monitor
     time.sleep(1.5)  # Delay to minimise chance of no read value
     if value2 == "Ok":  # If button clicked on window is Ok
+        print('in')
         saveCalibrate("max")  # Save values that is being read in the point of time
     else:
         print("calibration quit")
@@ -190,8 +215,9 @@ while True:
         break
     elif event == "_START_":  # When the start button is clicked:
         print("Start")
-        isReceiving = True  # Allow the thread to loop
-        t1.start()  # Start the thread
+        if not isCalibrating:
+            isReceiving = True  # Allow the thread to loop
+            t1.start()  # Start the thread
 
     elif event == "_STOP_":  # When the stop button is clicked:
         print("Stop")
@@ -202,7 +228,9 @@ while True:
     elif event == "_CALIBRATE_":  # When the calibrate button is clicked:
         print("Calibrate")
         if not isReceiving:
+            isCalibrating = True
             calibrate()
+            isCalibrating = False
         else:
             sg.popup("Please stop the program before calibration")
         # run calibrate()
