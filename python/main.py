@@ -16,26 +16,26 @@ from src import (
 images = [
     "../assets/signA2.png",
     "../assets/signB2.png",
-    "C",
-    "D",
-    "E",
-    "F",
+    "../assets/signC2.png",
+    "../assets/signD2.png",
+    "../assets/signE2.png",
+    "../assets/signF2.png",
     "../assets/signG2.png",
-    "H",
+    "../assets/signH2.png",
     "../assets/signI2.png",
-    "K",
+    "../assets/signK2.png",
     "../assets/signL2.png",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "S",
-    "T",
-    "U",
-    "W",
-    "X",
-    "Y",
+    "../assets/signM2.png",
+    "../assets/signN2.png",
+    "../assets/signO2.png",
+    "../assets/signP2.png",
+    "../assets/signQ2.png",
+    "../assets/signS2.png",
+    "../assets/signT2.png",
+    "../assets/signU2.png",
+    "../assets/signW2.png",
+    "../assets/signX2.png",
+    "../assets/signY2.png",
 ]
 
 letters = [
@@ -73,8 +73,11 @@ btnSz = (int(config["BUTTONSIZE"]["x"]), int(config["BUTTONSIZE"]["y"]))
 padding = (int(config["PADDING"]["x"]), int(config["PADDING"]["y"]))
 
 model, px = tfFunc.setupModel()  # Setup model for prediction
-arduino = serial.Serial(port=config["SERIAL"]["port"],baudrate=int(config["SERIAL"]["baudrate"]),timeout=float(config["SERIAL"]["timeout"]),)
-arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
+try:
+    arduino = serial.Serial(port=config["SERIAL"]["port"],baudrate=int(config["SERIAL"]["baudrate"]),timeout=float(config["SERIAL"]["timeout"]),)
+    arduinoFunc.arduinoSetup(arduino)  # Setup arduino connection
+except:
+    print("Error occurred with the initialisation of the Arduino, please check connections / whether port has been configured properly.")
 window = guiFunc.windowSetup(btnSz, imgSz, padding)  # Create the Window
 
 
@@ -104,6 +107,10 @@ def startProcess() -> None:
             i = tfFunc.modelPredict(model, df)  # Pass read values into model
             # print(i,images[i])
             updateText(letters[i])
+            try:
+                updateImg(images[i])
+            except:
+                pass
 
 
 def linear(ldata) -> list:
@@ -111,9 +118,10 @@ def linear(ldata) -> list:
     y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
     processedDatas = []
     #print(int(config["PINKIE"]['min']),int(config["PINKIE"]['max']))
-    #print(ldata)
+    print(ldata)
+
     for i in range(0, 5):
-        #print(int(ldata[i]))
+        print(ldata[i])
         processedData = (int(ldata[i]) - int(config[y[i]]['min'])) / (int(config[y[i]]['max']) - int(config[y[i]]['min']))
         processedDatas.append(processedData)
         # (read value - calibrated min) / (calibrated max - callibrated min)
@@ -123,6 +131,7 @@ def linear(ldata) -> list:
 
 def saveCalibrate(minmax) -> None:
     y = ["PINKIE", "RING", "MIDDLE", "INDEX", "THUMB"]
+
     datas = arduinoFunc.readData(arduino)  # Store read data at one instance
     if datas:  # If there is data
         datas = datas.split(",")
@@ -150,7 +159,8 @@ def calibrate() -> None:
         disable_close=True,
     ).read(close=True)
     # Create a window containing instructions
-    arduino.reset_input_buffer()  # Clear the buffer
+    # arduino.flush()  # Clear the buffer
+    arduino.readall()
     time.sleep(1.5)  # Delay to minimise chance of no read value
     if value1 == "Ok":  # If button clicked on window is Ok
         print('in2')
@@ -169,8 +179,9 @@ def calibrate() -> None:
         disable_close=True,
     ).read(close=True)
     # Create a window containing instructions
-    arduino.flushInput()  # arduino.readall() if this doesnt work
-    arduino.flush()  # Clears serial monitor
+    # arduino.reset_input_buffer()  # arduino.readall() if this doesnt work
+    # arduino.reset_output_buffer()
+    arduino.readall()  # Clears serial monitor
     time.sleep(1.5)  # Delay to minimise chance of no read value
     if value2 == "Ok":  # If button clicked on window is Ok
         print('in')
