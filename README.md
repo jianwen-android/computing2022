@@ -2,6 +2,11 @@
 
 A team of Sec 4s from the **School of Science and Technology, Singapore**.
 
+![Team Image](/assets/team.HEIC)
+
+_Image of the team *Triple Cripple Uncrippler*_
+_(From left to right, top to bottom) Leroy Hong (S401), Jian Wen (S402), Irman Zafyree (S401)_
+
 ## Instructions
 
 ### Glove
@@ -18,6 +23,7 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
    6. 5 [Spool covers](hardware/stl/Prot3.1_SpoolCover_Taller.STL)
 
 2. Prepare 5 badge reels by removing their outer plastic casing, and extracting the string + metal spool spring
+
    ![Anatomy of a badge reel](/hardware/anatomy-badge-reel.png)
 
    _Taken from [EID badges](https://www.eidbadges.com/anatomy-reels)_
