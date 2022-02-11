@@ -398,4 +398,4 @@ The teachers for giving us advice and guidance throughout the duration of the pr
 [^right]: Right hand is not used in the prototype.
 [^endcap]: Need to be sized to fit each individual finger (Use 3D modelling software like Fusion360)
 [^nodes]: Number can be adjusted according to how many you need, however at the minimum you will need 9 and we reccommend 14
-[^schematic]: Wire the first and second pin directly to 5V and the analog pins if youre using flex sensors
+[^schematic]: Wire the first and second pin directly to 5V and the analog pins respectively if youre using flex sensors
