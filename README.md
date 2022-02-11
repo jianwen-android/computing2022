@@ -25,7 +25,7 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 3. Prepare each reel by inserting a potentiometer knob side up into the bottom of the tensioner and screwing it in place with the provided nut
    1. Then insert the etched end of the spool spring into the hole on the side of the tensioner, turn and coil the spring into the tensioner
    2. Slot the spring into the slit of the potentiometer to hold it in place
-4. Tie a knot on one end of the string and slot it through the bottomm hole of the spool holder
+4. Tie a knot on one end of the string and slot it through the bottom hole of the spool holder
    1. Insert the spool holder onto the knob of the potentiometer
    2. Ensure that the potentiometer will spring back into place when you turn the spool holder clockwise
 5. Thread the other end of the string into the spool cover
@@ -75,11 +75,11 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 
 ## Hardware
 
-## STL
+### STL
 
 Taken from [lucidVR](https://github.com/LucidVR/lucidgloves/tree/44050f3c9a5da6cbe2278d66de1696ce95ae12e5) at commit **44050f3**
 
-## Wiring
+### Wiring
 
 In order to measure the values of the potentiometers when we bend our fingers, we need to connect the wipers (middle pin) of the potentiometer to the Arduino in this fashion:
 
@@ -112,9 +112,49 @@ _Declares variable pinkie and assigns it the the analog pin A4, then prints the 
 
 ## Python
 
-### tensorflow
+### Tensorflow (Training the model)
 
-@Zafyree3
+#### Importing Libraries
+
+```Python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense
+from sklearn.metrics import accuracy_score
+import tensorflow as tf
+import csv
+import numpy as np
+from google.colab import auth
+import gspread
+from oauth2client.client import GoogleCredentials
+```
+
+_These are all the libraries we used to train the model_
+
+#### Dealing With Spreadsheet
+
+```Python
+auth.authenticate_user() # Auth to allow access to the spread sheet
+gc = gspread.authorize(GoogleCredentials.get_application_default())
+worksheet = gc.open("Spoof Data").worksheet('Sheet4') # Opening the spreadsheet and downloading as CSV
+rows = worksheet.get_all_values() 
+pd.DataFrame.from_records(rows).to_csv("data.csv",index=False,header=False)
+```
+
+_These lines are to get the data from the google sheet and saves it as a csv to be used later_
+
+#### Preprocessing Data
+
+```Python
+df = pd.read_csv("data.csv") # Reading the CSV
+X = pd.get_dummies(df.drop(["Letter"],axis=1)) # Remove letter as that outcome
+letters = ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q",
+            "S","T","U","W","X","Y"] # List of the doable alphabets in order
+Y = df["Letter"].apply(lambda x: letters.index(x)) # Mapping ints to the letters
+```
+
+_Sets up the data to be used for the training of the model_
 
 ### configparser
 
