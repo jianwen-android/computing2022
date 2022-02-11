@@ -25,7 +25,7 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 3. Prepare each reel by inserting a potentiometer knob side up into the bottom of the tensioner and screwing it in place with the provided nut
    1. Then insert the etched end of the spool spring into the hole on the side of the tensioner, turn and coil the spring into the tensioner
    2. Slot the spring into the slit of the potentiometer to hold it in place
-4. Tie a knot on one end of the string and slot it through the bottomm hole of the spool holder
+4. Tie a knot on one end of the string and slot it through the bottom hole of the spool holder
    1. Insert the spool holder onto the knob of the potentiometer
    2. Ensure that the potentiometer will spring back into place when you turn the spool holder clockwise
 5. Thread the other end of the string into the spool cover
@@ -35,6 +35,14 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 6. Insert the completed module (Tensioner + Spool holder + Spool cover) onto the holders. They should click into place.
 7. Wear the gloves and put on the customized endcaps to each of the fingers
    1. Straighten your fingers against a flat surface and tie the ends of the string to the endcaps, ensuring that the reels are not pulled
+
+#### Flex sensor
+
+Alternatively, you can use bend sensors to measure the bend of a finger, this method will be more accurate, less bulky and easier to wear but will require more time and effort to create the sensors.
+
+Instructions on how to make them:
+[Instructables](https://www.instructables.com/How-to-Make-FLEX-Sensor-at-Home-DIY-Flex-Sensor/)
+[Arduino Forums](https://create.arduino.cc/projecthub/Shahirnasar/simple-homemade-flex-sensor-ff54f0)
 
 #### Arduino
 
@@ -75,11 +83,11 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 
 ## Hardware
 
-## STL
+### 3D Printed Parts
 
 Taken from [lucidVR](https://github.com/LucidVR/lucidgloves/tree/44050f3c9a5da6cbe2278d66de1696ce95ae12e5) at commit **44050f3**
 
-## Wiring
+### Wiring
 
 In order to measure the values of the potentiometers when we bend our fingers, we need to connect the wipers (middle pin) of the potentiometer to the Arduino in this fashion:
 
@@ -112,9 +120,133 @@ _Declares variable pinkie and assigns it the the analog pin A4, then prints the 
 
 ## Python
 
-### tensorflow
+### Tensorflow (Training the model)
 
-@Zafyree3
+#### Importing Libraries
+
+```Python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense
+from sklearn.metrics import accuracy_score
+import tensorflow as tf
+import csv
+import numpy as np
+from google.colab import auth
+import gspread
+from oauth2client.client import GoogleCredentials
+```
+
+_These are all the libraries we used to train the model_
+
+#### Dealing With Spreadsheet
+
+```Python
+auth.authenticate_user() # Auth to allow access to the spread sheet
+gc = gspread.authorize(GoogleCredentials.get_application_default())
+worksheet = gc.open("Spoof Data").worksheet('Sheet4') # Opening the spreadsheet and downloading as CSV
+rows = worksheet.get_all_values() 
+pd.DataFrame.from_records(rows).to_csv("data.csv",index=False,header=False)
+```
+
+_These lines are to get the data from the google sheet and saves it as a csv to be used later_
+
+#### Preprocessing Data
+
+```Python
+df = pd.read_csv("data.csv") # Reading the CSV
+X = pd.get_dummies(df.drop(["Letter"],axis=1)) # Remove letter as that outcome
+letters = ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q",
+            "S","T","U","W","X","Y"] # List of the doable alphabets in order, some letters like j and z requires movement, r, 
+Y = df["Letter"].apply(lambda x: letters.index(x)) # Mapping ints to the letters
+```
+
+_Sets up the data to be used for the training of the model_
+
+#### Getting Model
+
+```Python
+X_train,X_test,Y_train,Y_test = train_test_split(X,Y, test_size=0.3) # Split the data to be used for training and then testing
+model = tf.keras.models.Sequential([ # Create a neural network with a these following layers:
+                                    tf.keras.layers.Dense(5, activation="relu"), # Input layers with 5 nodes
+                                    tf.keras.layers.Dense(64, activation="relu"), # Hidden layers of 64 nodes
+                                    tf.keras.layers.Dense(32, activation="relu"), # Hidden layers of 32 nodes
+                                    tf.keras.layers.Dense(len(letters), activation="softmax") # Output layers with node equal to number of alphabet
+])
+model.compile( # Configures the model for training
+              optimizer='adam', # Optimizer that implements the Adam algorithm
+              loss='sparse_categorical_crossentropy', # Use this crossentropy loss function when there are two or more label classes.
+              metrics=['accuracy'] # Calculates how often predictions equal labels
+)
+```
+
+_Prepare the model that we want to train_
+
+#### Training Model
+
+```Python
+model.fit(X_train, Y_train, epochs=200) # Trains the model 200 times using our training data
+```
+
+_Our model learns from the data and changes the weights according to how the model was prepared earlier_
+
+#### Evaluate the Model
+
+```Python
+model.evaluate(X_test, Y_test) # Tests the model with the test data to see how accurate the prediction is
+```
+
+_We see how well our model is able to predict and change the configuration if the accuracy is too low (i.e < 70%)_
+
+#### Saving Model
+
+```Python
+model.save_weights('./weights/weights1')
+```
+
+_Saves the weights of the model into a folder to be used to predict data later_
+
+### Tensorflow (Predicting with the model)
+
+#### Load the model with weights
+
+```Python
+model = tf.keras.models.Sequential([ # Configures the layers to be the same as how it is trains in order to use the weights
+                                    tf.keras.layers.Dense(5, activation="relu"),
+                                    tf.keras.layers.Dense(64, activation="relu"),
+                                    tf.keras.layers.Dense(32, activation="relu"),
+                                    tf.keras.layers.Dense(len(letters), activation="softmax")
+])
+model.compile( # We also configure the compliations the same
+              optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy']
+)
+model.load_weights('./weights/weights1') # Load the weights into the model
+```
+
+_This is how we set up and load the weights into the model to be_
+
+#### Predicting with the model
+
+```Python
+pDf = pd.read_csv("pData.csv") # Loads the data to be predicted
+pX = pd.get_dummies(pDf.drop(["Letter"],axis=1)) # Removed the letter column as that is what we are predicting
+predictions = model.predict(pX) # Uses the model to predict the letter of the data
+classes = np.argmax(predictions, axis = 1) # We take the highest values from the predictions array
+letters = ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q",
+            "R","S","T","U","W","X","Y"]
+print(letters[classes[0]]) # Use the highest value to determine which latter was predicted
+```
+
+_The is how we use the model to predict letter of data_
+
+#### Colaboratory of code
+
+[Link for the colaboratory code can be found here](https://colab.research.google.com/drive/1Sa6vwZDiKaWeS2yP_VQGnIof6uECQ_Ln?usp=sharing)
+
+---
 
 ### configparser
 ```Python
