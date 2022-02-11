@@ -117,12 +117,30 @@ _Declares variable pinkie and assigns it the the analog pin A4, then prints the 
 @Zafyree3
 
 ### configparser
-
-### pysimplegui
+```Python
+import configparser  # A default(?) library used to read off ini files
+```
 
 ```Python
-import PySimpleGUI as sg
+config = configparser.ConfigParser()  # Setup configparser to read config.ini
+config.read("../config.ini")  # Read config.ini
 ```
+_Creates an object that contains values from config.ini_
+
+```Python
+imgSz = (int(config["IMAGESIZE"]["x"]), int(config["IMAGESIZE"]["y"]))
+btnSz = (int(config["BUTTONSIZE"]["x"]), int(config["BUTTONSIZE"]["y"]))
+padding = (int(config["PADDING"]["x"]), int(config["PADDING"]["y"]))
+
+arduino = serial.Serial(port=config["SERIAL"]["port"], baudrate=int(config["SERIAL"]["baudrate"]), timeout=float(config["SERIAL"]["timeout"]),)
+```
+_Accesses the variables in the config object for prior setup._
+### pysimplegui
+```Python
+import PySimpleGUI as sg  # A simple gui library used to display information and start the program
+```
+
+
 
 ```Python
 def windowSetup(btnSz, imgSz, padding):  # Run once before program starts
