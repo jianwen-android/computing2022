@@ -38,7 +38,7 @@ A team of Sec 4s from the **School of Science and Technology, Singapore**.
 
 #### Flex sensor
 
-Alternatively, you can use bend sensors to measure the bend of a finger, this method will be more accurate, less bulky and easier to wear but will require more time and effort to create the sensors.
+Alternatively, you can use bend sensors to measure the bend of a finger, this method will be more accurate, less bulky and easier to wear but will require more time and effort to create if you don't choose to buy the sensors.
 
 Instructions on how to make them:
 [Instructables](https://www.instructables.com/How-to-Make-FLEX-Sensor-at-Home-DIY-Flex-Sensor/)
@@ -107,7 +107,7 @@ In order to measure the values of the potentiometers when we bend our fingers, w
 
 ### Explanation
 
-```Arduino
+```c
 #define pinkie A4
 void loop() {
     Serial.print(analogRead(pinkie));
@@ -146,7 +146,7 @@ _These are all the libraries we used to train the model_
 auth.authenticate_user() # Auth to allow access to the spread sheet
 gc = gspread.authorize(GoogleCredentials.get_application_default())
 worksheet = gc.open("Spoof Data").worksheet('Sheet4') # Opening the spreadsheet and downloading as CSV
-rows = worksheet.get_all_values() 
+rows = worksheet.get_all_values()
 pd.DataFrame.from_records(rows).to_csv("data.csv",index=False,header=False)
 ```
 
@@ -158,7 +158,7 @@ _These lines are to get the data from the google sheet and saves it as a csv to 
 df = pd.read_csv("data.csv") # Reading the CSV
 X = pd.get_dummies(df.drop(["Letter"],axis=1)) # Remove letter as that outcome
 letters = ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q",
-            "S","T","U","W","X","Y"] # List of the doable alphabets in order, some letters like j and z requires movement, r, 
+            "S","T","U","W","X","Y"] # List of the doable alphabets in order, some letters like j and z requires movement, r,
 Y = df["Letter"].apply(lambda x: letters.index(x)) # Mapping ints to the letters
 ```
 
@@ -249,6 +249,7 @@ _The is how we use the model to predict letter of data_
 ---
 
 ### configparser
+
 ```Python
 import configparser  # A default(?) library used to read off ini files
 ```
@@ -257,6 +258,7 @@ import configparser  # A default(?) library used to read off ini files
 config = configparser.ConfigParser()  # Setup configparser to read config.ini
 config.read("../config.ini")  # Read config.ini
 ```
+
 _Creates an object that contains values from config.ini_
 
 ```Python
@@ -266,13 +268,14 @@ padding = (int(config["PADDING"]["x"]), int(config["PADDING"]["y"]))
 
 arduino = serial.Serial(port=config["SERIAL"]["port"], baudrate=int(config["SERIAL"]["baudrate"]), timeout=float(config["SERIAL"]["timeout"]),)
 ```
+
 _Accesses the variables in the config object for prior setup._
+
 ### pysimplegui
+
 ```Python
 import PySimpleGUI as sg  # A simple gui library used to display information and start the program
 ```
-
-
 
 ```Python
 def windowSetup(btnSz, imgSz, padding):  # Run once before program starts
