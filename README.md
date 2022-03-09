@@ -2,7 +2,7 @@
 
 A team of Sec 4s from the **School of Science and Technology, Singapore**.
 
-![Team Image](/assets/IMG_6436.png)
+![Team Image](/assets/familyPhoto.jpg)
 
 _Image of the team *Triple Cripple Uncrippler*_
 
