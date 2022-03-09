@@ -20,4 +20,6 @@ void loop() {
   Serial.print(analogRead(index));
   Serial.print(",");
   Serial.print(analogRead(thumb));
+  Serial.print("\n");
+  delay(1000);
 }

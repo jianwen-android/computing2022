@@ -6,7 +6,7 @@ import PySimpleGUI as sg  # A simple gui library used to display information and
 def windowSetup(btnSz, imgSz, padding):  # Run once before program starts
 
     sg.theme("DarkBlue")  # Color theme for program
-    imgSrc = "../assets/placeholder2.png"  # Placeholder image
+    imgSrc = "assets/placeholder2.png"  # Placeholder image
 
     buttonCol = [
         [sg.Button(button_text="Start", key="_START_", size=btnSz, font=('Arial', 40), expand_x=True, expand_y=True, pad=padding)],

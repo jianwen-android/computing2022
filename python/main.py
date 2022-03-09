@@ -14,28 +14,28 @@ from src import (
 )  # These are all functions separated by library for easier collation
 
 images = [
-    "../assets/signA2.png",
-    "../assets/signB2.png",
-    "../assets/signC2.png",
-    "../assets/signD2.png",
-    "../assets/signE2.png",
-    "../assets/signF2.png",
-    "../assets/signG2.png",
-    "../assets/signH2.png",
-    "../assets/signI2.png",
-    "../assets/signK2.png",
-    "../assets/signL2.png",
-    "../assets/signM2.png",
-    "../assets/signN2.png",
-    "../assets/signO2.png",
-    "../assets/signP2.png",
-    "../assets/signQ2.png",
-    "../assets/signS2.png",
-    "../assets/signT2.png",
-    "../assets/signU2.png",
-    "../assets/signW2.png",
-    "../assets/signX2.png",
-    "../assets/signY2.png",
+    "assets/signA2.png",
+    "assets/signB2.png",
+    "assets/signC2.png",
+    "assets/signD2.png",
+    "assets/signE2.png",
+    "assets/signF2.png",
+    "assets/signG2.png",
+    "assets/signH2.png",
+    "assets/signI2.png",
+    "assets/signK2.png",
+    "assets/signL2.png",
+    "assets/signM2.png",
+    "assets/signN2.png",
+    "assets/signO2.png",
+    "assets/signP2.png",
+    "assets/signQ2.png",
+    "assets/signS2.png",
+    "assets/signT2.png",
+    "assets/signU2.png",
+    "assets/signW2.png",
+    "assets/signX2.png",
+    "assets/signY2.png",
 ]
 
 letters = [
@@ -65,7 +65,7 @@ letters = [
 
 # Do setup
 config = configparser.ConfigParser()  # Setup configparser to read config.ini
-config.read("../config.ini")  # Read config.ini
+config.read("config.ini")  # Read config.ini
 
 isCalibrating = False
 isReceiving = False
@@ -105,7 +105,7 @@ def startProcess() -> None:
                 columns=["Pinky", "Ring", "Middle", "Index", "Thumb"],
                 dtype=float,
             )  # Format data into a table for predicting
-            i = tfFunc.modelPredict(model, df)  # Pass read values into model
+            i = tfFunc.modelPredict(model, df.values)  # Pass read values into model
             print(i,images[i])
             updateText(letters[i])
             try:
@@ -136,7 +136,7 @@ def saveCalibrate(minmax) -> None:
         for i in range(5):
             config[y[i]][minmax] = datas[i]  # Store data in the correct category for each data
         with open(
-                "../config.ini", "w"
+                "config.ini", "w"
         ) as configfile:  # Save read data into the config.ini
             config.write(configfile)  # This data will be used in the linear function
     else:
@@ -149,7 +149,7 @@ def calibrate() -> None:
     value1, _ = sg.Window(
         "Calibration",
         [
-            [sg.Image(source="../assets/placeholder2.png", size=imgSz)],
+            [sg.Image(source="assets/placeholder2.png", size=imgSz)],
             [sg.T("Extend your fingers and hold them out for 3 seconds")],
             [sg.Ok(s=10), sg.Cancel(s=10)],
         ],
@@ -168,7 +168,7 @@ def calibrate() -> None:
     value2, _ = sg.Window(
         "Calibration",
         [
-            [sg.Image(source="../assets/handClosed2.png", size=imgSz)],
+            [sg.Image(source="assets/handClosed2.png", size=imgSz)],
             [sg.T("Close your fingers into a fist and hold them closed for 3 seconds")],
             [sg.Ok(s=10), sg.Cancel(s=10)],
         ],

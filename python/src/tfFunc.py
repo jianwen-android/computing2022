@@ -51,7 +51,7 @@ def setupModel():  # Run once before program starts
     )
     # The infrastructure of the model
 
-    model.load_weights("src/weights/weights1")
+    model.load_weights("python/src/weights/weights1")
     # Load the weights derived from training model
 
     # Backup test data (not necessary when program is running)
